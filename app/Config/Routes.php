@@ -34,8 +34,8 @@ $routes->get('/', 'AuthController::login');
 
 
 // ------------------------------------------------------------------------------------------------------------------ API
-$routes->get('hbcapi-get-produks', 'Api\Produk::index');
-$routes->get('hbcapi-get-produk/(:any)', 'Api\Produk::show/$1');
+$routes->get('hbapi-get-produks', 'Api\Produk::index');
+$routes->get('hbapi-get-produk/(:any)', 'Api\Produk::show/$1');
 
 
 

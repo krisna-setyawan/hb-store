@@ -24,14 +24,14 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-5">
-                            <img class="mt-5" src="<?= base_url() ?>/assets/logo/logo.jpg" alt="logo" style="width: 100%; height: 77%; border-radius: 8px;">
+                            <img class="mt-5" src="<?= base_url() ?>/assets/logo/logo.jpg" alt="logo" style="width: 100%; height: 90%; border-radius: 8px;">
                         </div>
                         <div class="col-lg-5">
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
                                 <div class="card-header">
                                     <!-- <img src="<?= base_url() ?>/logo/logo-haebot.jpg" alt=""> -->
                                     <!-- <h3 class="text-center font-weight-light my-4">Login</h3> -->
-                                    <h3 class="text-center font-weight-light my-3"> <b class="text-secondary"> Haebot ERP </b> <br> <?= lang('Auth.loginTitle') ?> </h3>
+                                    <h3 class="text-center font-weight-light my-3"> <b class="text-secondary"> Haebot Store </b> <br> <?= lang('Auth.loginTitle') ?> </h3>
                                 </div>
 
                                 <div class="m-3 mb-0">
