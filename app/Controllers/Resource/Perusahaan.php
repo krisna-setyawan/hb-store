@@ -14,20 +14,13 @@ class Perusahaan extends ResourcePresenter
         // Membuat objek HTTP client
         $client = Services::curlrequest();
 
-        // Membuat URL API
         $url = $_ENV['URL_API'] . 'public/get-perusahaan';
-
-        // Melakukan permintaan GET ke URL API
         $response = $client->request('GET', $url);
-
-        // Mengambil status kode HTTP
         $status = $response->getStatusCode();
 
         // Mengambil body respons sebagai string
         $responseJson = $response->getBody();
-
         $responseArray = json_decode($responseJson, true);
-
         $perusahaan = $responseArray['data_perusahaan'];
 
         $data = [
@@ -43,20 +36,13 @@ class Perusahaan extends ResourcePresenter
         // Membuat objek HTTP client
         $client = Services::curlrequest();
 
-        // Membuat URL API
         $url = $_ENV['URL_API'] . 'public/get-perusahaan/' . $id;
-
-        // Melakukan permintaan GET ke URL API
         $response = $client->request('GET', $url);
-
-        // Mengambil status kode HTTP
         $status = $response->getStatusCode();
 
         // Mengambil body respons sebagai string
         $responseJson = $response->getBody();
-
         $responseArray = json_decode($responseJson, true);
-
         $perusahaan = $responseArray['data_perusahaan'];
 
         $json = [
@@ -64,5 +50,36 @@ class Perusahaan extends ResourcePresenter
         ];
 
         echo json_encode($json);
+    }
+
+
+    public function produk($id_perusahaan = null)
+    {
+        $client = Services::curlrequest();
+        $url = $_ENV['URL_API'] . 'public/get-perusahaan/' . $id_perusahaan;
+        $response = $client->request('GET', $url);
+        $status = $response->getStatusCode();
+        $responseJson = $response->getBody();
+        $responseArray = json_decode($responseJson, true);
+        $perusahaan = $responseArray['data_perusahaan'][0];
+
+        // produk
+        $url_produk = $perusahaan['url'] . 'hbapi-get-produks';
+        $response_produk = $client->request('GET', $url_produk);
+        $status = $response_produk->getStatusCode();
+        $responseJsonProduk = $response_produk->getBody();
+        $responseArrayProduk = json_decode($responseJsonProduk, true);
+        $produk = $responseArrayProduk['products'];
+
+        $db = \Config\Database::connect();
+        $builder_produk_kategori = $db->table('produk_kategori');
+
+        $data = [
+            'perusahaan'    => $perusahaan,
+            'produk'        => $produk,
+            'kategori'      => $builder_produk_kategori->get()->getResultArray(),
+        ];
+
+        return view('resource/perusahaan/list_produk', $data);
     }
 }

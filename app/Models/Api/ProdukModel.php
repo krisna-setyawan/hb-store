@@ -16,7 +16,7 @@ class ProdukModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'sku', 'hs_code', 'nama', 'slug', 'satuan',
-        'jenis', 'harga_jual',
+        'tipe', 'jenis', 'harga_jual',
         'berat', 'panjang', 'lebar', 'tinggi'
     ];
 
@@ -48,7 +48,7 @@ class ProdukModel extends Model
     public function getProducts()
     {
         $data =  $this->db->table($this->table)
-            ->select('id as id_produk, sku, hs_code, nama as produk, stok, slug, satuan, jenis, harga_jual, berat, panjang, lebar, tinggi')
+            ->select('id as id_produk, sku, hs_code, nama as produk, stok, slug, satuan, tipe, jenis, harga_jual, berat, panjang, lebar, tinggi')
             ->orderBy('id', 'asc')
             ->get()
             ->getResultArray();
@@ -59,7 +59,7 @@ class ProdukModel extends Model
     public function getProduct($sku)
     {
         $data =  $this->db->table($this->table)
-            ->select('sku, hs_code, nama, slug, satuan, jenis, harga_jual, berat, panjang, lebar, tinggi')
+            ->select('sku, hs_code, nama, slug, satuan, tipe, jenis, harga_jual, berat, panjang, lebar, tinggi')
             ->where('produk.sku', $sku)
             ->get()
             ->getRowArray();

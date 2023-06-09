@@ -196,14 +196,6 @@
                         $('#id_kategori').removeClass('is-invalid');
                         $('#id_kategori').addClass('is-valid');
                     }
-                    if (err.error_id_gudang) {
-                        $('.error-id_gudang').html(err.error_id_gudang);
-                        $('#id_gudang').addClass('is-invalid');
-                    } else {
-                        $('.error-id_gudang').html('');
-                        $('#id_gudang').removeClass('is-invalid');
-                        $('#id_gudang').addClass('is-valid');
-                    }
                     if (err.error_sku) {
                         $('.error-sku').html(err.error_sku);
                         $('#sku').addClass('is-invalid');
@@ -340,7 +332,6 @@
                         title: 'Berhasil',
                         text: response.success,
                     }).then((value) => {
-                        $('#tabel').DataTable().ajax.reload();
                         Toast.fire({
                             icon: 'success',
                             title: response.success

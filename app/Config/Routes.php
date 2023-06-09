@@ -37,6 +37,10 @@ $routes->get('/', 'AuthController::login');
 $routes->get('hbapi-get-produks', 'Api\Produk::index');
 $routes->get('hbapi-get-produk/(:any)', 'Api\Produk::show/$1');
 
+$routes->post('hbapi-give-notif', 'Api\Notifikasi::create');
+
+$routes->post('hbapi-sent-penjualan-order', 'Api\PenjualanOrder::create');
+
 
 
 $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
@@ -81,6 +85,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     $routes->resource('resource-produk', ['controller' => 'Resource\Produk', 'filter' => 'permission:Data Master']);
     $routes->get('resource-getdataproduk', 'Resource\Produk::getDataProduk', ['filter' => 'permission:Data Master']);
     $routes->post('resource-produkplan', 'Resource\ProdukPlan::create', ['filter' => 'permission:Data Master']);
+    $routes->get('resource-cek-exist-produk/(:any)', 'Resource\Produk::cekExistProduk/$1', ['filter' => 'permission:Data Master']);
 
     // Customer
     $routes->get('resource-customer', 'Resource\Customer::index', ['filter' => 'permission:Data Master']);
@@ -112,6 +117,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     // Perusahaan
     $routes->get('resource-perusahaan', 'Resource\Perusahaan::index', ['filter' => 'permission:Data Master']);
     $routes->get('resource-perusahaan/(:any)', 'Resource\Perusahaan::show/$1', ['filter' => 'permission:Data Master']);
+    $routes->get('resource-perusahaan-produk/(:any)', 'Resource\Perusahaan::produk/$1', ['filter' => 'permission:Data Master']);
 
 
 
@@ -308,13 +314,13 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     $routes->get('purchase-repeat_pemesanan/(:any)', 'Purchase\Pemesanan::repeatPemesanan/$1', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-save_repeat_pemesanan', 'Purchase\Pemesanan::saveRepeat', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-alasan_hapus_pemesanan', 'Purchase\Pemesanan::alasanHapusPemesanan', ['filter' => 'permission:Pembelian']);
+    $routes->post('purchase-simpan_pemesanan', 'Purchase\Pemesanan::simpanPemesanan', ['filter' => 'permission:Pembelian']);
+    $routes->post('purchase-kirim_pemesanan', 'Purchase\Pemesanan::kirimPemesanan', ['filter' => 'permission:Pembelian']);
     // Pemesanan Detail
     $routes->get('purchase-get_produk_add_list/(:any)', 'Purchase\Pemesanan_detail::getProdukForAddList/$1', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-find_produk_by_nama_sku', 'Purchase\Pemesanan_detail::findProdukByNamaSKU', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-list_pemesanan/(:any)', 'Purchase\Pemesanan_detail::List_pemesanan/$1', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-ganti_no_pemesanan', 'Purchase\Pemesanan_detail::gantiNoPemesanan', ['filter' => 'permission:Pembelian']);
-    $routes->post('purchase-simpan_pemesanan', 'Purchase\Pemesanan_detail::simpanPemesanan', ['filter' => 'permission:Pembelian']);
-    $routes->post('purchase-kirim_pemesanan', 'Purchase\Pemesanan_detail::kirimPemesanan', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-produks_pemesanan', 'Purchase\Pemesanan_detail::getListProdukPemesanan', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-check_list_produk', 'Purchase\Pemesanan_detail::checkListProduk', ['filter' => 'permission:Pembelian']);
     $routes->resource('purchase-pemesanan_detail', ['controller' => 'Purchase\Pemesanan_detail', 'filter' => 'permission:Pembelian']);

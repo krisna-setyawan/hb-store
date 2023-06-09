@@ -74,7 +74,6 @@
                         <div class="mb-3">
                             <label for="supplier" class="form-label">Supplier</label>
                             <select class="form-select" id="supplier" name="supplier">
-                                <option value=""></option>
                                 <?php foreach ($supplier as $sup) : ?>
                                     <option <?= ($sup['id'] == $pemesanan['id_supplier']) ? 'selected' : '' ?> value="<?= $sup['id'] ?>"><?= $sup['nama'] ?></option>
                                 <?php endforeach ?>
@@ -94,6 +93,15 @@
                                 <?php endforeach ?>
                             </select>
                             <input type="hidden" name="id_user" id="id_user">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gudang" class="form-label">Diterima Gudang</label>
+                            <select class="form-select" id="gudang" name="gudang">
+                                <option value=""></option>
+                                <?php foreach ($gudang as $gud) : ?>
+                                    <option <?= ($gud['id'] == $pemesanan['id_gudang']) ? 'selected' : '' ?> value="<?= $gud['id'] ?>"><?= $gud['nama'] ?></option>
+                                <?php endforeach ?>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -146,6 +154,9 @@
             theme: "bootstrap-5",
         });
         $("#user").select2({
+            theme: "bootstrap-5",
+        });
+        $("#gudang").select2({
             theme: "bootstrap-5",
         });
 
@@ -269,70 +280,92 @@
 
 
     $('#simpan_pemesanan').click(function() {
-        let id_pemesanan = '<?= $pemesanan['id'] ?>'
-        let no_pemesanan = $('#no_pemesanan').val()
-        let id_supplier = $('#supplier').val()
-        let tanggal = $('#tanggal').val()
-        $.ajax({
-            type: "post",
-            url: "<?= site_url() ?>purchase-simpan_pemesanan",
-            data: 'id_pemesanan=' + id_pemesanan +
-                '&no_pemesanan=' + no_pemesanan +
-                '&id_supplier=' + id_supplier +
-                '&tanggal=' + tanggal,
-            dataType: "json",
-            success: function(response) {
-                if (response.ok) {
-                    location.href = '<?= site_url() ?>purchase-pemesanan'
-                } else {
-                    Swal.fire(
-                        'Opss.',
-                        'Terjadi kesalahan, hubungi IT Support',
-                        'error'
-                    )
+        if ($('#gudang').val() == '') {
+            $('#gudang').removeClass('is-valid');
+            $('#gudang').addClass('is-invalid');
+        } else {
+            $('#gudang').addClass('is-valid');
+            $('#gudang').removeClass('is-invalid');
+        }
+
+        if ($('#gudang').val() != '') {
+            let id_pemesanan = '<?= $pemesanan['id'] ?>'
+            let no_pemesanan = $('#no_pemesanan').val()
+            let id_supplier = $('#supplier').val()
+            let tanggal = $('#tanggal').val()
+            let gudang = $('#gudang').val()
+            $.ajax({
+                type: "post",
+                url: "<?= site_url() ?>purchase-simpan_pemesanan",
+                data: 'id_pemesanan=' + id_pemesanan +
+                    '&no_pemesanan=' + no_pemesanan +
+                    '&id_supplier=' + id_supplier +
+                    '&gudang=' + gudang +
+                    '&tanggal=' + tanggal,
+                dataType: "json",
+                success: function(response) {
+                    if (response.ok) {
+                        location.href = '<?= site_url() ?>purchase-pemesanan'
+                    } else {
+                        Swal.fire(
+                            'Opss.',
+                            'Terjadi kesalahan, hubungi IT Support',
+                            'error'
+                        )
+                    }
+                },
+                error: function(e) {
+                    alert('Error \n' + e.responseText);
                 }
-            },
-            error: function(e) {
-                alert('Error \n' + e.responseText);
-            }
-        });
+            });
+        }
     })
 
 
     $('#kirim_pemesanan').click(function() {
-        let id_pemesanan = '<?= $pemesanan['id'] ?>'
-        $.ajax({
-            type: "post",
-            url: "<?= site_url() ?>purchase-check_list_produk",
-            data: 'id_pemesanan=' + id_pemesanan,
-            dataType: "json",
-            success: function(response) {
-                if (response.ok) {
-                    Swal.fire({
-                        title: 'Konfirmasi?',
-                        text: "Apakah yakin mengirim pemesanan ini ke supplier?",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Ya, Lanjut!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#form_pemesanan').submit();
-                        }
-                    })
-                } else {
-                    Swal.fire(
-                        'Opss.',
-                        'Tidak ada produk dalam pemesanan. pilih minimal satu produk dulu!',
-                        'error'
-                    )
+        if ($('#gudang').val() == '') {
+            $('#gudang').removeClass('is-valid');
+            $('#gudang').addClass('is-invalid');
+        } else {
+            $('#gudang').addClass('is-valid');
+            $('#gudang').removeClass('is-invalid');
+        }
+
+        if ($('#gudang').val() != '') {
+            let id_pemesanan = '<?= $pemesanan['id'] ?>'
+            $.ajax({
+                type: "post",
+                url: "<?= site_url() ?>purchase-check_list_produk",
+                data: 'id_pemesanan=' + id_pemesanan,
+                dataType: "json",
+                success: function(response) {
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'Konfirmasi?',
+                            text: "Apakah yakin mengirim pemesanan ini ke supplier?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, Lanjut!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#form_pemesanan').submit();
+                            }
+                        })
+                    } else {
+                        Swal.fire(
+                            'Opss.',
+                            'Tidak ada produk dalam pemesanan. pilih minimal satu produk dulu!',
+                            'error'
+                        )
+                    }
+                },
+                error: function(e) {
+                    alert('Error \n' + e.responseText);
                 }
-            },
-            error: function(e) {
-                alert('Error \n' + e.responseText);
-            }
-        });
+            });
+        }
     })
 </script>
 

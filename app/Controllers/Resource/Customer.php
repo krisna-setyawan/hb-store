@@ -156,8 +156,12 @@ class Customer extends ResourcePresenter
         $saldo_belanja = str_replace(".", "", $this->request->getPost('saldo_belanja'));
         $saldo_lain = str_replace(".", "", $this->request->getPost('saldo_lain'));
 
+        $jenis_customer = ($this->request->getPost('perusahaan') == 'Non Haebot') ? 'Non-Haebot' : 'Haebot';
+
         $data = [
             'id_customer'       => $this->request->getPost('id_customer'),
+            'jenis_customer'    => $jenis_customer,
+            'id_perusahaan'     => $this->request->getPost('id_perusahaan'),
             'nama'              => $this->request->getPost('nama'),
             'slug'              => $slug,
             'no_telp'           => $this->request->getPost('no_telp'),
@@ -179,6 +183,27 @@ class Customer extends ResourcePresenter
 
     public function edit($id = null)
     {
+        $id_perusahaan = $_ENV['ID_PERUSAHAAN'];
+
+        // Membuat objek HTTP client
+        $client = Services::curlrequest();
+
+        // Membuat URL API
+        $url = $_ENV['URL_API'] . 'public/get-perusahaan';
+
+        // Melakukan permintaan GET ke URL API
+        $response = $client->request('GET', $url);
+
+        // Mengambil status kode HTTP
+        $status = $response->getStatusCode();
+
+        // Mengambil body respons sebagai string
+        $responseJson = $response->getBody();
+
+        $responseArray = json_decode($responseJson, true);
+
+        $perusahaan = $responseArray['data_perusahaan'];
+
         $modelCustomer = new CustomerModel();
         $modelCustomerPJ = new CustomerPJModel();
         $modelCustomerAlamat = new CustomerAlamatModel();
@@ -194,6 +219,8 @@ class Customer extends ResourcePresenter
         }
 
         $data = [
+            'id_perusahaan'     => $id_perusahaan,
+            'perusahaan'        => $perusahaan,
             'validation'        => \Config\Services::validation(),
             'customer'          => $modelCustomer->where(['id' => $id])->first(),
             'pj'                => $pj,
@@ -273,9 +300,13 @@ class Customer extends ResourcePresenter
 
         $slug = url_title($this->request->getPost('nama'), '-', true);
 
+        $jenis_customer = ($this->request->getPost('perusahaan') == 'Non Haebot') ? 'Non-Haebot' : 'Haebot';
+
         $data = [
             'id'                => $id,
             'id_customer'       => $this->request->getPost('id_customer'),
+            'jenis_customer'    => $jenis_customer,
+            'id_perusahaan'     => $this->request->getPost('id_perusahaan'),
             'nama'              => $this->request->getPost('nama'),
             'slug'              => $slug,
             'no_telp'           => $this->request->getPost('no_telp'),

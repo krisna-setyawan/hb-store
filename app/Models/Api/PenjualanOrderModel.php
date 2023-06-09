@@ -1,30 +1,32 @@
 <?php
 
-namespace App\Models\Purchase;
+namespace App\Models\Api;
 
 use CodeIgniter\Model;
 
-class PembelianDetailModel extends Model
+
+class PenjualanOrderModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'pembelian_detail';
+    protected $table            = 'penjualan_order';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
     protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
+    protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id_pembelian',
-        'id_produk',
-        'sku',
-        'qty',
-        'harga_satuan',
-        'total_harga'
+        'id_pemesanan',
+        'no_pemesanan',
+        'id_perusahaan',
+        'nama_perusahaan',
+        'tanggal',
+        'status',
+        'grand_total',
     ];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
@@ -46,27 +48,4 @@ class PembelianDetailModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    function getListProdukPembelian($id_pembelian)
-    {
-        $data =  $this->db->table($this->table)
-            ->select('pembelian_detail.*, produk.nama as produk, produk.sku as sku')
-            ->join('produk', 'pembelian_detail.id_produk = produk.id', 'left')
-            ->where('pembelian_detail.id_pembelian', $id_pembelian)
-            ->get()
-            ->getResultArray();
-
-        return $data;
-    }
-
-    function sumTotalHargaProduk($id_pembelian)
-    {
-        $data =  $this->db->table($this->table)
-            ->selectSum('total_harga')
-            ->where('id_pembelian', $id_pembelian)
-            ->get()
-            ->getRowArray();
-
-        return $data;
-    }
 }

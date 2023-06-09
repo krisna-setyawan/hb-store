@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models\Sales;
+namespace App\Models\Purchase;
 
 use CodeIgniter\Model;
 
-class PenjualanDetailModel extends Model
+class PemesananFixingDetailModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'penjualan_detail';
+    protected $table            = 'pemesanan_fixing_detail';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
@@ -15,16 +15,12 @@ class PenjualanDetailModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id_penjualan',
+        'id_pemesanan_fixing',
         'id_produk',
         'sku',
         'qty',
         'harga_satuan',
-        'diskon',
-        'biaya_tambahan',
-        'total_harga',
-        'berat',
-        'catatan',
+        'total_harga'
     ];
 
     // Dates
@@ -51,25 +47,23 @@ class PenjualanDetailModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function getListProdukPenjualan($id_penjualan)
+    function getListProdukPemesananFixing($id_pemesanan_fixing)
     {
         $data =  $this->db->table($this->table)
-            ->select('penjualan_detail.*, produk.nama as produk, produk.sku as sku, produk.satuan as satuan, sum(lokasi_produk.stok) as stok')
-            ->join('produk', 'penjualan_detail.id_produk = produk.id', 'left')
-            ->join('lokasi_produk', 'penjualan_detail.id_produk = lokasi_produk.id_produk', 'left')
-            ->where('penjualan_detail.id_penjualan', $id_penjualan)
-            ->groupBy('lokasi_produk.id_produk')
+            ->select('pemesanan_fixing_detail.*, produk.nama as produk, produk.sku as sku')
+            ->join('produk', 'pemesanan_fixing_detail.id_produk = produk.id', 'left')
+            ->where('pemesanan_fixing_detail.id_pemesanan_fixing', $id_pemesanan_fixing)
             ->get()
             ->getResultArray();
 
         return $data;
     }
 
-    function sumTotalHargaProduk($id_penjualan)
+    function sumTotalHargaProduk($id_pemesanan_fixing)
     {
         $data =  $this->db->table($this->table)
             ->selectSum('total_harga')
-            ->where('id_penjualan', $id_penjualan)
+            ->where('id_pemesanan_fixing', $id_pemesanan_fixing)
             ->get()
             ->getRowArray();
 

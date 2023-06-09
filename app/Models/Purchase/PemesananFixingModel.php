@@ -5,10 +5,10 @@ namespace App\Models\Purchase;
 use CodeIgniter\Model;
 
 
-class PembelianModel extends Model
+class PemesananFixingModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'pembelian';
+    protected $table            = 'pemesanan_fixing';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
@@ -17,18 +17,15 @@ class PembelianModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'id_pemesanan',
-        'id_pemesanan_fixing',
         'id_supplier',
         'id_user',
         'id_gudang',
         'jenis_supplier',
         'id_perusahaan',
-        'no_pembelian',
+        'no_pemesanan',
         'invoice',
         'tanggal',
         'status',
-        'status_pembayaran',
-        'status_inbound',
         'panjang',
         'lebar',
         'tinggi',
@@ -73,50 +70,50 @@ class PembelianModel extends Model
     protected $afterDelete    = [];
 
 
-    public function getPembelian($no)
+    public function getPemesananFixing($no_pemesanan)
     {
         $data =  $this->db->table($this->table)
-            ->select('pembelian.*, supplier.nama as supplier, supplier.no_telp as telp_supplier, gudang.nama as gudang, karyawan.nama_lengkap as admin, pemesanan.no_pemesanan')
-            ->join('pemesanan', 'pembelian.id_pemesanan = pemesanan.id', 'left')
-            ->join('supplier', 'pembelian.id_supplier = supplier.id', 'left')
-            ->join('gudang', 'pembelian.id_gudang = gudang.id', 'left')
-            ->join('users', 'pembelian.id_user = users.id', 'left')
+            ->select('pemesanan_fixing.*, supplier.nama as supplier, supplier.no_telp as telp_supplier, gudang.nama as gudang, karyawan.nama_lengkap as admin, pemesanan.no_pemesanan')
+            ->join('pemesanan', 'pemesanan_fixing.id_pemesanan = pemesanan.id', 'left')
+            ->join('supplier', 'pemesanan_fixing.id_supplier = supplier.id', 'left')
+            ->join('gudang', 'pemesanan_fixing.id_gudang = gudang.id', 'left')
+            ->join('users', 'pemesanan_fixing.id_user = users.id', 'left')
             ->join('karyawan', 'users.id_karyawan = karyawan.id', 'left')
-            ->where('pembelian.deleted_at', null)
-            ->where('no_pembelian', $no)
+            ->where('pemesanan_fixing.deleted_at', null)
+            ->where('no_pemesanan', $no_pemesanan)
             ->get()
             ->getRowArray();
 
         return $data;
     }
 
-    public function getPembelianById($id)
+    public function getPemesananFixingById($id)
     {
         $data =  $this->db->table($this->table)
-            ->select('pembelian.*, supplier.nama as supplier, supplier.no_telp as telp_supplier, gudang.nama as gudang, karyawan.nama_lengkap as admin, pemesanan.no_pemesanan')
-            ->join('pemesanan', 'pembelian.id_pemesanan = pemesanan.id', 'left')
-            ->join('supplier', 'pembelian.id_supplier = supplier.id', 'left')
-            ->join('gudang', 'pembelian.id_gudang = gudang.id', 'left')
-            ->join('users', 'pembelian.id_user = users.id', 'left')
+            ->select('pemesanan_fixing.*, supplier.nama as supplier, supplier.no_telp as telp_supplier, gudang.nama as gudang, karyawan.nama_lengkap as admin, pemesanan.no_pemesanan')
+            ->join('pemesanan', 'pemesanan_fixing.id_pemesanan = pemesanan.id', 'left')
+            ->join('supplier', 'pemesanan_fixing.id_supplier = supplier.id', 'left')
+            ->join('gudang', 'pemesanan_fixing.id_gudang = gudang.id', 'left')
+            ->join('users', 'pemesanan_fixing.id_user = users.id', 'left')
             ->join('karyawan', 'users.id_karyawan = karyawan.id', 'left')
-            ->where('pembelian.deleted_at', null)
-            ->where('pembelian.id', $id)
+            ->where('pemesanan_fixing.deleted_at', null)
+            ->where('pemesanan_fixing.id', $id)
             ->get()
             ->getRowArray();
 
         return $data;
     }
 
-    public function getPembelianByIdPemesanan($id_pemesanan)
+    public function getPemesananFixingByIdPemesanan($id_pemesanan)
     {
         $data =  $this->db->table($this->table)
-            ->select('pembelian.*, supplier.nama as supplier, gudang.nama as gudang, karyawan.nama_lengkap as admin, pemesanan.no_pemesanan')
-            ->join('pemesanan', 'pembelian.id_pemesanan = pemesanan.id', 'left')
-            ->join('supplier', 'pembelian.id_supplier = supplier.id', 'left')
-            ->join('gudang', 'pembelian.id_gudang = gudang.id', 'left')
-            ->join('users', 'pembelian.id_user = users.id', 'left')
+            ->select('pemesanan_fixing.*, supplier.nama as supplier, gudang.nama as gudang, karyawan.nama_lengkap as admin, pemesanan.no_pemesanan')
+            ->join('pemesanan', 'pemesanan_fixing.id_pemesanan = pemesanan.id', 'left')
+            ->join('supplier', 'pemesanan_fixing.id_supplier = supplier.id', 'left')
+            ->join('gudang', 'pemesanan_fixing.id_gudang = gudang.id', 'left')
+            ->join('users', 'pemesanan_fixing.id_user = users.id', 'left')
             ->join('karyawan', 'users.id_karyawan = karyawan.id', 'left')
-            ->where('pembelian.deleted_at', null)
+            ->where('pemesanan_fixing.deleted_at', null)
             ->where('id_pemesanan', $id_pemesanan)
             ->get()
             ->getRowArray();

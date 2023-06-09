@@ -37,6 +37,8 @@
                 </div>
             </div>
 
+            <input type="hidden" id="id_perusahaan" name="id_perusahaan" value="">
+
 
             <div class="row mb-3">
                 <label for="id_customer" class="col-sm-3 col-form-label">ID Customer</label>
@@ -143,6 +145,7 @@
                         if (res.perusahaan) {
                             $('#nama').val(res.perusahaan.nama)
                             $('#no_telp').val(res.perusahaan.no_telp)
+                            $('#id_perusahaan').val(res.perusahaan.id_perusahaan)
                         }
                     },
                     error: function(e) {
@@ -152,6 +155,7 @@
             } else {
                 $('#nama').val('')
                 $('#no_telp').val('')
+                $('#id_perusahaan').val('')
             }
         });
     });

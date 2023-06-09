@@ -25,6 +25,21 @@
 
                 <input type="hidden" name="_method" value="PUT">
 
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary" for="id_customer">Perusahaan</label>
+                    <select class="form-control" name="perusahaan" id="perusahaan">
+                        <option value="Non Haebot">Non Haebot</option>
+                        <?php foreach ($perusahaan as $prs) :
+                            if ($prs['id_perusahaan'] != $id_perusahaan) { ?>
+                                <option <?= ($prs['id_perusahaan'] == $customer['id_perusahaan']) ? 'selected' : '' ?> data-id="<?= $prs['id_perusahaan'] ?>" value="<?= $prs['nama'] ?>"><?= $prs['nama'] ?></option>
+                            <?php } ?>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+
+                <input type="hidden" id="id_perusahaan" name="id_perusahaan" value="<?= $customer['id_perusahaan'] ?>">
+
                 <div class="mb-3">
                     <label class="form-label text-secondary" for="id_customer">ID Customer</label>
                     <input type="text" class="form-control <?= (validation_show_error('id_customer')) ? 'is-invalid' : ''; ?>" id="id_customer" name="id_customer" value="<?= old('id_customer', $customer['id_customer']); ?>">
@@ -440,6 +455,32 @@
                 title: op
             })
         }
+
+
+        $('#perusahaan').on('change', function() {
+            var id = $(this).find('option:selected').data('id');
+            if (id) {
+                $.ajax({
+                    type: 'GET',
+                    url: '<?= site_url() ?>resource-perusahaan/' + id,
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.perusahaan) {
+                            $('#nama').val(res.perusahaan.nama)
+                            $('#no_telp').val(res.perusahaan.no_telp)
+                            $('#id_perusahaan').val(res.perusahaan.id_perusahaan)
+                        }
+                    },
+                    error: function(e) {
+                        alert('Error \n' + e.responseText);
+                    }
+                })
+            } else {
+                $('#nama').val('')
+                $('#no_telp').val('')
+                $('#id_perusahaan').val('')
+            }
+        });
     })
 
 

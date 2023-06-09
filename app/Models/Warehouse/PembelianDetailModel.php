@@ -17,6 +17,7 @@ class PembelianDetailModel extends Model
     protected $allowedFields    = [
         'id_pembelian',
         'id_produk',
+        'sku',
         'qty',
         'harga_satuan',
         'total_harga'

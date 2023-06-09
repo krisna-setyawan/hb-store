@@ -14,6 +14,7 @@
 # ENVIRONMENT
 #--------------------------------------------------------------------
 
+NAMA_PERUSAHAAN = 'Haebot PB'
 ID_PERUSAHAAN = hbstore
 URL_API = http://localhost/Haebot/haebot-api/
 

@@ -23,6 +23,7 @@ class PenjualanModel extends Model
         'tanggal',
         'status',
         'status_pembayaran',
+        'status_outbound',
         'panjang',
         'lebar',
         'tinggi',

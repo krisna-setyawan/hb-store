@@ -17,9 +17,10 @@ class PemesananModel extends Model
     protected $allowedFields    = [
         'id_supplier',
         'id_user',
+        'id_gudang',
+        'no_pemesanan',
         'jenis_supplier',
         'id_perusahaan',
-        'no_pemesanan',
         'tanggal',
         'total_harga_produk',
         'status',

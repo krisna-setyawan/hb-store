@@ -24,9 +24,10 @@
                 <tr>
                     <th class="text-center" width="5%">No</th>
                     <th class="text-center" width="10%">ID</th>
-                    <th class="text-center" width="30%">Nama</th>
-                    <th class="text-center" width="40%">Alamat</th>
+                    <th class="text-center" width="26%">Nama</th>
+                    <th class="text-center" width="36%">Alamat</th>
                     <th class="text-center" width="15%">No Telp</th>
+                    <th class="text-center" width="8%">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +39,11 @@
                         <td><?= $sp['nama'] ?></td>
                         <td><?= $sp['alamat'] ?></td>
                         <td><?= $sp['no_telp'] ?></td>
+                        <td class="text-center">
+                            <?php if ($_ENV['ID_PERUSAHAAN'] != $sp['id_perusahaan']) { ?>
+                                <a href="<?= site_url() ?>resource-perusahaan-produk/<?= $sp['id_perusahaan'] ?>" class="btn btn-sm btn-outline-primary"> Produk &nbsp;<i class="fa-fw fa-solid fa-list-ul"></i></a>
+                            <?php } ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tr>

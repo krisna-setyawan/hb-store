@@ -8,6 +8,7 @@ use App\Models\Purchase\PemesananModel;
 use App\Models\Purchase\SupplierModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use \Hermawan\DataTables\DataTable;
+use CodeIgniter\Config\Services;
 
 class Pemesanan extends ResourcePresenter
 {
@@ -166,6 +167,132 @@ class Pemesanan extends ResourcePresenter
             return 'Tidak bisa load';
         }
     }
+
+
+
+
+
+    public function simpanPemesanan()
+    {
+        if ($this->request->isAJAX()) {
+            $id_pemesanan = $this->request->getVar('id_pemesanan');
+
+            $modelPemesanan = new PemesananModel();
+            $modelPemesananDetail = new PemesananDetailModel();
+            $sum = $modelPemesananDetail->sumTotalHargaProduk($id_pemesanan);
+
+            $modelSupplier = new SupplierModel();
+            $supplier = $modelSupplier->find($this->request->getPost('id_supplier'));
+
+            $data_update = [
+                'id'                    => $this->request->getVar('id_pemesanan'),
+                'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
+                'id_supplier'           => $this->request->getVar('id_supplier'),
+                'jenis_supplier'        => $supplier['jenis_supplier'],
+                'id_perusahaan'         => $supplier['id_perusahaan'],
+                'id_gudang'             => $this->request->getVar('gudang'),
+                'tanggal'               => $this->request->getVar('tanggal'),
+                'total_harga_produk'    => $sum['total_harga'],
+            ];
+            $modelPemesanan->save($data_update);
+
+            $json = ['ok' => 'ok'];
+            echo json_encode($json);
+        } else {
+            return 'Tidak bisa load';
+        }
+    }
+
+
+    public function kirimPemesanan()
+    {
+        $id_pemesanan = $this->request->getVar('id_pemesanan');
+
+        $modelPemesanan = new PemesananModel();
+        $pemesanan = $modelPemesanan->find($id_pemesanan);
+
+        $modelPemesananDetail = new PemesananDetailModel();
+        $sum = $modelPemesananDetail->sumTotalHargaProduk($id_pemesanan);
+
+        $modelSupplier = new SupplierModel();
+        $supplier = $modelSupplier->find($this->request->getPost('id_supplier'));
+
+        $pesanFlash = '';
+
+        if ($supplier['jenis_supplier'] == 'Haebot') {
+            $client = Services::curlrequest();
+
+            // Get data perusahaan
+            $url_get_perusahaan = $_ENV['URL_API'] . 'public/get-perusahaan/' . $supplier['id_perusahaan'];
+            $response_get_perusahaan = $client->request('GET', $url_get_perusahaan);
+            $status = $response_get_perusahaan->getStatusCode();
+            $responseJson = $response_get_perusahaan->getBody();
+            $responseArray = json_decode($responseJson, true);
+            $perusahaan = $responseArray['data_perusahaan'][0];
+
+            // Sent data Order (Haebot Order / Penjualan Order)
+            $url_sent_order = $perusahaan['url'] . 'hbapi-sent-penjualan-order';
+            $data_order = [
+                'id_pemesanan'      => $pemesanan['id'],
+                'no_pemesanan'      => $this->request->getVar('no_pemesanan'),
+                'id_perusahaan'     => $this->request->getVar('id_perusahaan'),
+                'nama_perusahaan'   => $_ENV['NAMA_PERUSAHAAN'],
+                'tanggal'           => $this->request->getVar('tanggal'),
+                'grand_total'       => $sum['total_harga'],
+            ];
+            $response_sent_order = $client->request('POST', $url_sent_order, [
+                'form_params' => $data_order
+            ]);
+            $responseBodySentOrder = json_decode($response_sent_order->getBody(), true);
+
+
+            if ($response_sent_order->getStatusCode() === 201) {
+
+                // Sent Notif
+                $url_give_notif = $perusahaan['url'] . 'hbapi-give-notif';
+                $data_notif = [
+                    'untuk' => 'Order',
+                    'notif' => 'Order masuk dari ' . $_ENV['NAMA_PERUSAHAAN']
+                ];
+                $response_give_notif = $client->request('POST', $url_give_notif, [
+                    'form_params' => $data_notif
+                ]);
+                $responseBodyNotif = json_decode($response_give_notif->getBody(), true);
+
+                if ($response_give_notif->getStatusCode() === 201) {
+                    $pesanFlash .= "Berhasil kirim pemesanan ke " . $perusahaan['nama'] . " dan " . $responseBodyNotif['messages'];
+                } else {
+                    $pesanFlash .= "Berhasil kirim pemesanan tapi Gagal mengirim Notif " . $responseBodyNotif['error'];
+                }
+            } else {
+                echo 'error';
+                $pesanFlash .= "Gagal mengirim pemesanan " . $responseBodySentOrder['error'];
+            }
+        } else {
+            $pesanFlash .= "Status pemesanan berhasil diupdate ke Ordered.";
+        }
+
+
+        $data_update = [
+            'id'                    => $pemesanan['id'],
+            'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
+            'id_supplier'           => $this->request->getVar('supplier'),
+            'jenis_supplier'        => $supplier['jenis_supplier'],
+            'id_perusahaan'         => $supplier['id_perusahaan'],
+            'id_gudang'             => $this->request->getVar('gudang'),
+            'id_user'               => $this->request->getVar('id_user'),
+            'tanggal'               => $this->request->getVar('tanggal'),
+            'total_harga_produk'    => $sum['total_harga'],
+            'status'                => 'Ordered'
+        ];
+        $modelPemesanan->save($data_update);
+
+        session()->setFlashdata('pesan', $pesanFlash);
+        return redirect()->to('/purchase-pemesanan');
+    }
+
+
+
 
 
     public function alasanHapusPemesanan()

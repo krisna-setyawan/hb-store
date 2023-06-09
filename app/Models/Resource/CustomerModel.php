@@ -15,7 +15,7 @@ class CustomerModel extends Model
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id_customer', 'nama', 'slug', 'no_telp', 'email', 'status',
+        'id_customer', 'nama', 'jenis_customer', 'id_perusahaan', 'slug', 'no_telp', 'email', 'status',
         'saldo_utama', 'saldo_belanja', 'saldo_lain', 'tgl_registrasi', 'note',
         'created_at', 'updated_at', 'deleted_at',
     ];

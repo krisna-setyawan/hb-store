@@ -17,6 +17,7 @@ class PemesananDetailModel extends Model
     protected $allowedFields    = [
         'id_pemesanan',
         'id_produk',
+        'sku',
         'qty',
         'harga_satuan',
         'total_harga'

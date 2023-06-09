@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Purchase;
 
+use App\Models\Purchase\GudangModel;
 use App\Models\Purchase\PemesananDetailModel;
 use App\Models\Purchase\PemesananModel;
 use App\Models\Purchase\ProdukModel;
@@ -29,11 +30,15 @@ class Pemesanan_detail extends ResourcePresenter
         $modelUser = new UserModel();
         $user = $modelUser->getAllUserWithKaryawanName();
 
+        $modelGudang = new GudangModel();
+        $gudang = $modelGudang->findAll();
+
         $data = [
             'pemesanan'             => $pemesanan,
             'supplier'              => $supplier,
             'produk'                => $produk,
-            'user'                  => $user
+            'user'                  => $user,
+            'gudang'                => $gudang,
         ];
         return view('purchase/pemesanan/detail', $data);
     }
@@ -203,57 +208,5 @@ class Pemesanan_detail extends ResourcePresenter
         } else {
             return 'Tidak bisa load';
         }
-    }
-
-
-    public function simpanPemesanan()
-    {
-        if ($this->request->isAJAX()) {
-            $id_pemesanan = $this->request->getVar('id_pemesanan');
-
-            $modelPemesanan = new PemesananModel();
-            $modelPemesananDetail = new PemesananDetailModel();
-            $sum = $modelPemesananDetail->sumTotalHargaProduk($id_pemesanan);
-
-            $data_update = [
-                'id'                    => $this->request->getVar('id_pemesanan'),
-                'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
-                'id_supplier'           => $this->request->getVar('id_supplier'),
-                'tanggal'               => $this->request->getVar('tanggal'),
-                'total_harga_produk'    => $sum['total_harga'],
-            ];
-            $modelPemesanan->save($data_update);
-
-            $json = ['ok' => 'ok'];
-            echo json_encode($json);
-        } else {
-            return 'Tidak bisa load';
-        }
-    }
-
-
-    public function kirimPemesanan()
-    {
-        $id_pemesanan = $this->request->getVar('id_pemesanan');
-
-        $modelPemesanan = new PemesananModel();
-        $pemesanan = $modelPemesanan->find($id_pemesanan);
-
-        $modelPemesananDetail = new PemesananDetailModel();
-        $sum = $modelPemesananDetail->sumTotalHargaProduk($id_pemesanan);
-
-        $data_update = [
-            'id'                    => $pemesanan['id'],
-            'id_supplier'           => $this->request->getVar('supplier'),
-            'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
-            'id_user'               => $this->request->getVar('id_user'),
-            'total_harga_produk'    => $sum['total_harga'],
-            'tanggal'               => $this->request->getVar('tanggal'),
-            'status'                => 'Ordered'
-        ];
-        $modelPemesanan->save($data_update);
-
-        session()->setFlashdata('pesan', 'Status pemesanan berhasil diupdate ke Ordered.');
-        return redirect()->to('/purchase-pemesanan');
     }
 }

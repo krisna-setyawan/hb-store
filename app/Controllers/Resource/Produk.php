@@ -202,13 +202,13 @@ class Produk extends ResourcePresenter
                         'required' => 'kategori produk harus diisi.',
                     ]
                 ],
-                'hs_code' => [
-                    'rules' => 'required|is_unique[produk.hs_code]',
-                    'errors' => [
-                        'required' => '{field} produk harus diisi.',
-                        'is_unique' => 'HS Code produk sudah ada dalam database.'
-                    ]
-                ],
+                // 'hs_code' => [
+                //     'rules' => 'required|is_unique[produk.hs_code]',
+                //     'errors' => [
+                //         'required' => '{field} produk harus diisi.',
+                //         'is_unique' => 'HS Code produk sudah ada dalam database.'
+                //     ]
+                // ],
                 'sku' => [
                     'rules' => 'required|is_unique[produk.sku]',
                     'errors' => [
@@ -250,7 +250,7 @@ class Produk extends ResourcePresenter
                 'harga_jual' => [
                     'rules' => 'required',
                     'errors' => [
-                        'required' => 'Harga beli produk harus diisi.',
+                        'required' => 'Harga jual produk harus diisi.',
                     ]
                 ],
                 'stok' => [
@@ -680,5 +680,19 @@ class Produk extends ResourcePresenter
 
         session()->setFlashdata('pesan', 'Data berhasil dihapus.');
         return redirect()->to('/resource-produk');
+    }
+
+
+    public function cekExistProduk($sku)
+    {
+        $modelProduk = new ProdukModel();
+
+        $produk = $modelProduk->where('sku', $sku)->first();
+
+        $json = [
+            'produk' => $produk
+        ];
+
+        echo json_encode($json);
     }
 }

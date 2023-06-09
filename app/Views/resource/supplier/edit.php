@@ -32,7 +32,7 @@
                             <option value="Non Haebot">Non Haebot</option>
                             <?php foreach ($perusahaan as $prs) :
                                 if ($prs['id_perusahaan'] != $id_perusahaan) { ?>
-                                    <option <?= ($prs['id_perusahaan'] == $supplier['id_perusahaan']) ? 'selected' : '' ?> data-id="<?= $prs['id'] ?>" value="<?= $prs['nama'] ?>"><?= $prs['nama'] ?></option>
+                                    <option <?= ($prs['id_perusahaan'] == $supplier['id_perusahaan']) ? 'selected' : '' ?> data-id="<?= $prs['id_perusahaan'] ?>" value="<?= $prs['nama'] ?>"><?= $prs['nama'] ?></option>
                                 <?php } ?>
                             <?php endforeach ?>
                         </select>
