@@ -9,6 +9,11 @@
         <div class="me-auto mb-1">
             <h3 style="color: #566573;">Fixing Pemesanan dan Buat Pembelian</h3>
         </div>
+        <div class="me-2 mb-1">
+            <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>purchase">
+                <i class="fa-fw fa-solid fa-arrow-left"></i> Kembali
+            </a>
+        </div>
     </div>
 
     <hr class="mt-0 mb-4">
@@ -150,13 +155,8 @@
                         dataType: "json",
                         success: function(response) {
                             if (response.ok) {
-                                if (response.id_pembelian == 0) {
-                                    $('#form_delete').attr('action', '<?= site_url() ?>purchase-pemesanan/' + response.id_pemesanan);
-                                    $('#form_delete').submit();
-                                } else {
-                                    $('#form_delete').attr('action', '<?= site_url() ?>purchase-pembelian/' + response.id_pembelian);
-                                    $('#form_delete').submit();
-                                }
+                                $('#form_delete').attr('action', '<?= site_url() ?>purchase-pemesanan/' + response.id_pemesanan);
+                                $('#form_delete').submit();
                             } else {
                                 Swal.fire(
                                     'Opss.',

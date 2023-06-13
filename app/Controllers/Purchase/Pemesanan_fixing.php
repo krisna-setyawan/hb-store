@@ -20,24 +20,24 @@ class Pemesanan_fixing extends ResourcePresenter
     {
         if ($this->request->isAJAX()) {
             $db = \Config\Database::connect();
-            $data =  $db->table('pemesanan')
-                ->select('pemesanan.id, pemesanan.no_pemesanan, pemesanan.tanggal, supplier.nama as supplier, pemesanan.status, users.name as admin')
-                ->join('supplier', 'pemesanan.id_supplier = supplier.id', 'left')
-                ->join('users', 'users.id = pemesanan.id_user', 'left')
-                ->where('pemesanan.deleted_at', null)
-                ->where('pemesanan.status', 'Ordered')
-                ->orWhere('pemesanan.status', 'Fixing')
-                ->orderBy('pemesanan.id', 'desc');
+            $data =  $db->table('pemesanan_fixing')
+                ->select('pemesanan_fixing.id, pemesanan_fixing.no_pemesanan, pemesanan_fixing.tanggal, supplier.nama as supplier, pemesanan_fixing.status, users.name as admin')
+                ->join('supplier', 'pemesanan_fixing.id_supplier = supplier.id', 'left')
+                ->join('users', 'users.id = pemesanan_fixing.id_user', 'left')
+                ->where('pemesanan_fixing.deleted_at', null)
+                ->where('pemesanan_fixing.status !=', 'Batal')
+                ->orWhere('pemesanan_fixing.status !=', 'Pembelian')
+                ->orderBy('pemesanan_fixing.id', 'desc');
 
             return DataTable::of($data)
                 ->addNumbering('no')
                 ->add('aksi', function ($row) {
                     return '
-                        <form action="' . site_url() . 'purchase-pembelian" method="POST" class="d-inline">
-                            ' . csrf_field() . '
-                            <input type="hidden" name="no_pemesanan" value="' . $row->no_pemesanan . '">
-                            <button title="Buat Pembelian" type="submit" class="px-2 py-0 btn btn-sm btn-outline-primary"><i class="fa-fw fa-solid fa-pen"></i></button>
-                        </form>
+                        <a href"' . site_url() . 'purchase-list_fixing/' . $row->no_pemesanan . '">
+                            <button title="Fixing" class="px-2 py-0 btn btn-sm btn-outline-primary">    
+                                <i class="fa-fw fa-solid fa-pen"></i>
+                            </button>
+                        </a>
                         
                         <form id="form_delete" method="POST" class="d-inline">
                             ' . csrf_field() . '
@@ -51,3 +51,9 @@ class Pemesanan_fixing extends ResourcePresenter
         }
     }
 }
+
+// <form action="' . site_url() . 'purchase-pembelian" method="POST" class="d-inline">
+// ' . csrf_field() . '
+// <input type="hidden" name="no_pemesanan" value="' . $row->no_pemesanan . '">
+// <button title="Buat Pembelian" type="submit" class="px-2 py-0 btn btn-sm btn-outline-primary"><i class="fa-fw fa-solid fa-pen"></i></button>
+// </form>

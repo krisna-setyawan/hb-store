@@ -9,6 +9,11 @@
         <div class="me-auto mb-1">
             <h3 style="color: #566573;">Data Produk <?= $nama_gudang ?></h3>
         </div>
+        <div class="me-2 mb-1">
+            <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>warehouse">
+                <i class="fa-fw fa-solid fa-arrow-left"></i> Kembali
+            </a>
+        </div>
     </div>
 
     <hr class="mt-0 mb-4">

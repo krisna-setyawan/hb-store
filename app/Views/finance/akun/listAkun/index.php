@@ -9,11 +9,11 @@
         <div class="me-auto mb-1">
             <h3 style="color: #566573;">Data Akun</h3>
         </div>
-        <!-- <div class="me-2 mb-1">
-            <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>finance-akun">
+        <div class="me-2 mb-1">
+            <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>finance">
                 <i class="fa-fw fa-solid fa-arrow-left"></i> Kembali
             </a>
-        </div> -->
+        </div>
         <div class="me-2 mb-1">
             <a class="btn btn-sm btn-outline-danger" href="<?= site_url() ?>finance-kategori">
                 <i class="fa-fw fa-solid fa-gear"></i> Kategori

@@ -8,9 +8,14 @@
         <div class="me-auto mb-1">
             <h3 style="color: #566573;">Absensi Karyawan</h3>
         </div>
+        <div class="me-2 mb-1">
+            <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>hrm">
+                <i class="fa-fw fa-solid fa-arrow-left"></i> Kembali
+            </a>
+        </div>
         <form action="<?= site_url('hrm-view-absensi-filter') ?>" method="POST" class="mb-1">
-            <div class="input-group" style="width: 320px;">
-                <select name="bulan" id="bulan" class="form-select">
+            <div class="input-group input-group-sm" style="width: 320px;">
+                <select name="bulan" id="bulan" class="form-select form-select-sm">
                     <?php for ($i = 1; $i <= 12; $i++) : ?>
                         <?php if ($bulan) { ?>
                             <option <?= ($i == $bulan ? 'selected' : '') ?> value="<?= $i ?>"><?= date("F", strtotime("2001-$i-01")) ?></option>
@@ -19,7 +24,7 @@
                         <?php } ?>
                     <?php endfor; ?>
                 </select>
-                <select id="tahun" name="tahun" class="form-select">
+                <select id="tahun" name="tahun" class="form-select form-select-sm">
                     <?php for ($i = date('Y'); $i >= 2020; $i--) : ?>
                         <?php if ($tahun) { ?>
                             <option <?= ($i == $tahun ? 'selected' : '') ?> value="<?= $i ?>"><?= $i ?></option>

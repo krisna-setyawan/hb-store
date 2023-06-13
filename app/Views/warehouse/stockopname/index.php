@@ -9,7 +9,11 @@
         <div class="me-auto mb-1">
             <h3 style="color: #566573;">Data Stok Opname <?= $nama_gudang ?></h3>
         </div>
-
+        <div class="me-2 mb-1">
+            <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>warehouse">
+                <i class="fa-fw fa-solid fa-arrow-left"></i> Kembali
+            </a>
+        </div>
         <div class="mb-1">
             <a class="btn btn-sm btn-outline-secondary mb-3" id="tombolTambah">
                 <i class="fa-fw fa-solid fa-plus"></i> Tambah

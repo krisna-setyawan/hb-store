@@ -53,6 +53,8 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     $routes->get('sales', 'Menus::sales', ['filter' => 'permission:Penjualan']);
     $routes->get('warehouse', 'Menus::warehouse', ['filter' => 'permission:Gudang']);
 
+    $routes->get('get-notif', 'Notifikasi::index');
+
 
 
 
@@ -328,6 +330,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     // Fixing Pemesanan
     $routes->get('purchase-fixing_pemesanan', 'Purchase\Pemesanan_fixing::index', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-get_pemesanan_ordered', 'Purchase\Pemesanan_fixing::getDataPemesananOrdered', ['filter' => 'permission:Pembelian']);
+
     // Fixing Pemesanan Detail
     $routes->get('purchase-list_fixing/(:any)', 'Purchase\Pemesanan_detail_fixing::ListFixing/$1', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-produks_pembelian', 'Purchase\Pemesanan_detail_fixing::getListProdukPembelian', ['filter' => 'permission:Pembelian']);
@@ -397,6 +400,9 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     $routes->post('sales-produks_penawaran', 'Sales\Penawaran_detail::getListProdukPenawaran', ['filter' => 'permission:Penjualan']);
     $routes->post('sales-check_list_produk', 'Sales\Penawaran_detail::checkListProduk', ['filter' => 'permission:Penjualan']);
     $routes->resource('sales-penawaran_detail', ['controller' => 'Sales\Penawaran_detail', 'filter' => 'permission:Penjualan']);
+
+    // Penjualan Order
+    $routes->get('sales-order', 'Sales\Order::index', ['filter' => 'permission:Penjualan']);
 
     // Fixing Penawaran
     $routes->get('sales-fixing_penawaran', 'Sales\Penawaran_fixing::index', ['filter' => 'permission:Penjualan']);

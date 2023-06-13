@@ -4,6 +4,8 @@ namespace App\Controllers\Purchase;
 
 use App\Models\Purchase\PembelianModel;
 use App\Models\Purchase\PemesananDetailModel;
+use App\Models\Purchase\PemesananFixingDetailModel;
+use App\Models\Purchase\PemesananFixingModel;
 use App\Models\Purchase\PemesananModel;
 use App\Models\Purchase\SupplierModel;
 use CodeIgniter\RESTful\ResourcePresenter;
@@ -235,7 +237,7 @@ class Pemesanan extends ResourcePresenter
             $data_order = [
                 'id_pemesanan'      => $pemesanan['id'],
                 'no_pemesanan'      => $this->request->getVar('no_pemesanan'),
-                'id_perusahaan'     => $this->request->getVar('id_perusahaan'),
+                'id_perusahaan'     => $_ENV['ID_PERUSAHAAN'],
                 'nama_perusahaan'   => $_ENV['NAMA_PERUSAHAAN'],
                 'tanggal'           => $this->request->getVar('tanggal'),
                 'grand_total'       => $sum['total_harga'],
@@ -270,6 +272,35 @@ class Pemesanan extends ResourcePresenter
             }
         } else {
             $pesanFlash .= "Status pemesanan berhasil diupdate ke Ordered.";
+
+            $modelPemesananFixing = new PemesananFixingModel();
+            $dataFixing = [
+                'id_pemesanan'          => $pemesanan['id'],
+                'id_supplier'           => $pemesanan['id_supplier'],
+                'id_user'               => $pemesanan['id_user'],
+                'id_gudang'             => $pemesanan['id_gudang'],
+                'invoice'               => '-',
+                'no_pemesanan'          => $pemesanan['no_pemesanan'],
+                'tanggal'               => $pemesanan['tanggal'],
+                'grand_total'           => $sum['total_harga'],
+                'status'                => 'Fixing',
+            ];
+            $modelPemesananFixing->save($dataFixing);
+            $id_pemesanan_fixing = $modelPemesananFixing->getInsertID();
+
+            $modelPemesananFixingDetail = new PemesananFixingDetailModel();
+            $listProdukPemesanan = $modelPemesananDetail->where(['id_pemesanan' => $pemesanan['id']])->findAll();
+            foreach ($listProdukPemesanan as $produk) {
+                $data_produk = [
+                    'id_pemesanan_fixing'   => $id_pemesanan_fixing,
+                    'id_produk'             => $produk['id_produk'],
+                    'sku'                   => $produk['sku'],
+                    'qty'                   => $produk['qty'],
+                    'harga_satuan'          => $produk['harga_satuan'],
+                    'total_harga'           => $produk['total_harga'],
+                ];
+                $modelPemesananFixingDetail->save($data_produk);
+            }
         }
 
 
@@ -299,7 +330,6 @@ class Pemesanan extends ResourcePresenter
     {
         if ($this->request->isAJAX()) {
             $modelPemesanan = new PemesananModel();
-            $modelPembelian = new PembelianModel();
 
             $data = [
                 'id'                => $this->request->getPost('id'),
@@ -307,20 +337,10 @@ class Pemesanan extends ResourcePresenter
             ];
             $modelPemesanan->save($data);
 
-            $pembelian = $modelPembelian->where(['id_pemesanan' => $this->request->getPost('id')])->first();
-
-            if ($pembelian) {
-                $json = [
-                    'ok' => 'ok',
-                    'id_pembelian' => $pembelian['id']
-                ];
-            } else {
-                $json = [
-                    'ok' => 'ok',
-                    'id_pembelian' => 0,
-                    'id_pemesanan' => $this->request->getPost('id')
-                ];
-            }
+            $json = [
+                'ok' => 'ok',
+                'id_pemesanan' => $this->request->getPost('id')
+            ];
 
             echo json_encode($json);
         } else {

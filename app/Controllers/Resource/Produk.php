@@ -345,7 +345,10 @@ class Produk extends ResourcePresenter
 
                 $slug = url_title($this->request->getPost('nama'), '-', true);
 
-                $harga_beli = str_replace(".", "", $this->request->getPost('harga_beli'));
+                // Menghapus karakter yang tidak terkait dengan angka
+                $pattern = '/[^0-9]/'; // Pola ekspresi reguler untuk mencocokkan angka
+                $harga_beli = preg_replace($pattern, '', $this->request->getPost('harga_beli'));
+
                 $harga_jual = str_replace(".", "", $this->request->getPost('harga_jual'));
 
                 $data = [

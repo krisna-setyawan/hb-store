@@ -431,6 +431,8 @@
                         title: 'Berhasil',
                         text: response.success,
                     })
+                    var form = $('#form');
+                    form[0].reset();
                 }
             },
             error: function(e) {

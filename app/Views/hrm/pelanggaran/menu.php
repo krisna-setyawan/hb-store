@@ -4,9 +4,19 @@
 
 
 <main class="p-md-3 p-2">
-    <h3 style="color: #566573;">Pelanggaran</h3>
 
-    <hr>
+    <div class="d-flex mb-0">
+        <div class="me-auto">
+            <h3 style="color: #566573;">Pelanggaran</h3>
+        </div>
+        <div class="me-2 mb-1">
+            <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>hrm">
+                <i class="fa-fw fa-solid fa-arrow-left"></i> Kembali
+            </a>
+        </div>
+    </div>
+
+    <hr class="mt-0 mb-4">
 
     <div class="row mt-4">
         <div class="col-md-4">

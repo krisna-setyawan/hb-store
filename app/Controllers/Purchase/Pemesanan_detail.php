@@ -137,6 +137,7 @@ class Pemesanan_detail extends ResourcePresenter
                 'id'                    => $cek_produk['id'],
                 'id_pemesanan'          => $id_pemesanan,
                 'id_produk'             => $this->request->getPost('id_produk'),
+                'sku'                   => $produk['sku'],
                 'qty'                   => $cek_produk['qty'] + $this->request->getPost('qty'),
                 'harga_satuan'          => $produk['harga_beli'],
                 'total_harga'           => $cek_produk['total_harga'] + ($produk['harga_beli'] * $this->request->getPost('qty')),
@@ -146,6 +147,7 @@ class Pemesanan_detail extends ResourcePresenter
             $data = [
                 'id_pemesanan'          => $id_pemesanan,
                 'id_produk'             => $this->request->getPost('id_produk'),
+                'sku'                   => $produk['sku'],
                 'qty'                   => $this->request->getPost('qty'),
                 'harga_satuan'          => $produk['harga_beli'],
                 'total_harga'           => ($produk['harga_beli'] * $this->request->getPost('qty')),
