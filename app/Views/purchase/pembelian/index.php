@@ -189,22 +189,6 @@
 <!-- Modal -->
 
 <script>
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 5000,
-        timerProgressBar: true,
-        background: '#EC7063',
-        color: '#fff',
-        iconColor: '#fff',
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    })
-
-
     $(document).ready(function() {
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {

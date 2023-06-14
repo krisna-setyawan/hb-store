@@ -8,6 +8,23 @@
 <script src="template/select2/js/select2.min.js" crossorigin="anonymous"></script>
 
 <script>
+    // Bahan Alert
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        background: '#EC7063',
+        color: '#fff',
+        iconColor: '#fff',
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+
     function formatRupiah(angka) {
         // var number_string = angka.toString(),
         //     sisa = number_string.length % 3,

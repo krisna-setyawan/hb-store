@@ -29,9 +29,9 @@ class Pemesanan extends ResourcePresenter
             $db = \Config\Database::connect();
             $data =  $db->table('pemesanan')
                 ->select('pemesanan.id, pemesanan.no_pemesanan, pemesanan.tanggal, supplier.nama as supplier, pemesanan.total_harga_produk, pemesanan.status')
-                ->join('supplier', 'pemesanan.id_supplier = supplier.id', 'left')
-                // ->where('pemesanan.deleted_at', null)
-                ->orderBy('pemesanan.id', 'desc');
+                ->join('supplier', 'pemesanan.id_supplier = supplier.id', 'left');
+            // ->where('pemesanan.deleted_at', null)
+            // ->orderBy('pemesanan.id', 'desc');
 
             return DataTable::of($data)
                 ->addNumbering('no')
@@ -351,8 +351,8 @@ class Pemesanan extends ResourcePresenter
 
     public function delete($id = null)
     {
-        // $modelPemesananDetail = new PemesananDetailModel();
-        // $detailPemesanan = $modelPemesananDetail->where(['id_pemesanan' => $id])->delete();
+        $modelPemesananFixing = new PemesananFixingModel();
+        $modelPemesananFixing->where(['id_pemesanan' => $id])->delete();
 
         $modelPemesanan = new PemesananModel();
         $modelPemesanan->save(
