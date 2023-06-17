@@ -14,7 +14,7 @@
 
     <div class="d-flex mb-0">
         <div class="me-auto mb-1">
-            <h3 style="color: #566573;">Fix List Produk Pembelian</h3>
+            <h3 style="color: #566573;">Fix List Produk Pemesanan</h3>
         </div>
         <div class="me-2">
             <a class="btn btn-sm btn-outline-dark" href="<?= site_url() ?>purchase-fixing_pemesanan">
@@ -67,6 +67,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
 
@@ -77,46 +78,36 @@
                     <div class="col-md-4">
                         <div class="card mb-3">
                             <div class="card-header text-light" style="background-color: #3A98B9;">
-                                Detail Pembelian
+                                Detail Pemesanan
                             </div>
                             <div class="card-body" style="background-color: #E6ECF0;">
 
-                                <div class="mb-2">Nomor Pemesanan : <b><?= $pembelian['no_pemesanan'] ?></b></div>
-                                <div class="mb-2" id="text_no_pembelian">Nomor Pembelian : <b><?= $pembelian['no_pembelian'] ?></b></div>
+                                <div class="mb-2" id="text_no_pemesanan">Nomor Pemesanan : <b><?= $pemesananFixing['no_pemesanan'] ?></b></div>
                                 <div class="mb-2">Admin : <b><?= user()->name ?></b></div>
 
                                 <hr>
 
                                 <?= csrf_field() ?>
 
-                                <input type="hidden" name="id_pembelian" value="<?= $pembelian['id'] ?>">
-                                <input type="hidden" name="id_admin" value="<?= user()->id ?>">
-                                <input type="hidden" id="no_pembelian" name="no_pembelian" value="<?= $pembelian['no_pembelian'] ?>">
-                                <input type="hidden" id="grand_total" name="grand_total" value="<?= $pembelian['exw'] + $pembelian['hf'] + $pembelian['ppn_hf'] + $pembelian['ongkir_port'] + $pembelian['ongkir_laut_udara'] + $pembelian['ongkir_transit'] + $pembelian['ongkir_gudang'] + $pembelian['bm'] + $pembelian['ppn'] + $pembelian['pph'] ?>">
+                                <input type="hidden" name="id_pemesanan_fixing" value="<?= $pemesananFixing['id'] ?>">
+                                <input type="hidden" id="no_pemesanan" name="no_pemesanan" value="<?= $pemesananFixing['no_pemesanan'] ?>">
+                                <input type="hidden" id="id_user" name="id_user" value="<?= user()->id ?>">
+                                <input type="hidden" id="grand_total" name="grand_total" value="<?= $pemesananFixing['exw'] + $pemesananFixing['hf'] + $pemesananFixing['ppn_hf'] + $pemesananFixing['ongkir_port'] + $pemesananFixing['ongkir_laut_udara'] + $pemesananFixing['ongkir_transit'] + $pemesananFixing['ongkir_gudang'] + $pemesananFixing['bm'] + $pemesananFixing['ppn'] + $pemesananFixing['pph'] ?>">
 
                                 <div class="mb-3">
                                     <label for="invoice" class="form-label">Invoice Supplier</label>
-                                    <input type="text" class="form-control" id="invoice" name="invoice" value="<?= $pembelian['invoice'] ?>">
+                                    <input type="text" class="form-control" id="invoice" name="invoice" value="<?= $pemesananFixing['invoice'] ?>">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="tanggal" class="form-label">Tanggal Pembelian</label>
-                                    <input onchange="ganti_no_pembelian()" type="text" class="form-control" id="tanggal" name="tanggal" value="<?= $pembelian['tanggal'] ?>">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="supplier" class="form-label">Supplier</label>
-                                    <select class="form-select" id="supplier" name="supplier">
-                                        <?php foreach ($supplier as $sup) : ?>
-                                            <option <?= ($sup['id'] == $pembelian['id_supplier']) ? 'selected' : '' ?> value="<?= $sup['id'] ?>"><?= $sup['nama'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                    <input type="hidden" name="id_supplier" id="id_supplier">
+                                    <label for="tanggal" class="form-label">Tanggal Pemesanan</label>
+                                    <input onchange="ganti_no_pemesanan()" type="text" class="form-control" id="tanggal" name="tanggal" value="<?= $pemesananFixing['tanggal'] ?>">
                                 </div>
                                 <div class="mb-3">
                                     <label for="gudang" class="form-label">Diterima Gudang</label>
                                     <select class="form-select" id="gudang" name="gudang">
                                         <option value=""></option>
                                         <?php foreach ($gudang as $gud) : ?>
-                                            <option <?= ($gud['id'] == $pembelian['id_gudang']) ? 'selected' : '' ?> value="<?= $gud['id'] ?>"><?= $gud['nama'] ?></option>
+                                            <option <?= ($gud['id'] == $pemesananFixing['id_gudang']) ? 'selected' : '' ?> value="<?= $gud['id'] ?>"><?= $gud['nama'] ?></option>
                                         <?php endforeach ?>
                                     </select>
                                 </div>
@@ -125,21 +116,21 @@
                                         <div class="col-sm-4">
                                             <p class="mb-1">Panjang</p>
                                             <div class="input-group mb-3">
-                                                <input type="number" min="1" value="<?= $pembelian['panjang'] ?>" class="form-control" id="panjang" name="panjang">
+                                                <input type="number" min="1" value="<?= $pemesananFixing['panjang'] ?>" class="form-control" id="panjang" name="panjang">
                                                 <span class="input-group-text px-2">m</span>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <p class="mb-1">Lebar</p>
                                             <div class="input-group mb-3">
-                                                <input type="number" min="1" value="<?= $pembelian['lebar'] ?>" class="form-control" id="lebar" name="lebar">
+                                                <input type="number" min="1" value="<?= $pemesananFixing['lebar'] ?>" class="form-control" id="lebar" name="lebar">
                                                 <span class="input-group-text px-2">m</span>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <p class="mb-1">Tinggi</p>
                                             <div class="input-group mb-3">
-                                                <input type="number" min="1" value="<?= $pembelian['tinggi'] ?>" class="form-control" id="tinggi" name="tinggi">
+                                                <input type="number" min="1" value="<?= $pemesananFixing['tinggi'] ?>" class="form-control" id="tinggi" name="tinggi">
                                                 <span class="input-group-text px-2">m</span>
                                             </div>
                                         </div>
@@ -148,13 +139,13 @@
                                 <div class="mb-3">
                                     <label class="form-label">Berat</label>
                                     <div class="input-group mb-3">
-                                        <input type="number" min="1" value="<?= $pembelian['berat'] ?>" class="form-control" id="berat" name="berat">
+                                        <input type="number" min="1" value="<?= $pemesananFixing['berat'] ?>" class="form-control" id="berat" name="berat">
                                         <span class="input-group-text px-2">kg</span>
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Carton / Koli</label>
-                                    <input type="number" min="1" value="<?= $pembelian['carton_koli'] ?>" class="form-control" id="carton_koli" name="carton_koli">
+                                    <input type="number" min="1" value="<?= $pemesananFixing['carton_koli'] ?>" class="form-control" id="carton_koli" name="carton_koli">
                                 </div>
                             </div>
                         </div>
@@ -171,7 +162,7 @@
                                     <label for="exw" class="form-label">EXW</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input readonly type="text" class="form-control triger-hitung-total" id="exw" name="exw" value="<?= number_format($pembelian['exw'], 0, ',', '.') ?>">
+                                        <input readonly type="text" class="form-control triger-hitung-total" id="exw" name="exw" value="<?= number_format($pemesananFixing['exw'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -180,7 +171,7 @@
                                     <label for="hf" class="form-label">HF</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="hf" name="hf" value="<?= number_format($pembelian['hf'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="hf" name="hf" value="<?= number_format($pemesananFixing['hf'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -189,7 +180,7 @@
                                     <label for="ppn_hf" class="form-label">PPN HF</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="ppn_hf" name="ppn_hf" value="<?= number_format($pembelian['ppn_hf'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="ppn_hf" name="ppn_hf" value="<?= number_format($pemesananFixing['ppn_hf'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -198,7 +189,7 @@
                                     <label for="ongkir_port" class="form-label">Ongkir Port</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_port" name="ongkir_port" value="<?= number_format($pembelian['ongkir_port'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_port" name="ongkir_port" value="<?= number_format($pemesananFixing['ongkir_port'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -207,7 +198,7 @@
                                     <label for="ongkir_laut_udara" class="form-label">Ongkir Laut / Udara</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_laut_udara" name="ongkir_laut_udara" value="<?= number_format($pembelian['ongkir_laut_udara'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_laut_udara" name="ongkir_laut_udara" value="<?= number_format($pemesananFixing['ongkir_laut_udara'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -216,7 +207,7 @@
                                     <label for="ongkir_transit" class="form-label">Ongkir Transit</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_transit" name="ongkir_transit" value="<?= number_format($pembelian['ongkir_transit'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_transit" name="ongkir_transit" value="<?= number_format($pemesananFixing['ongkir_transit'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -225,7 +216,7 @@
                                     <label for="ongkir_gudang" class="form-label">Ongkir Gudang</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_gudang" name="ongkir_gudang" value="<?= number_format($pembelian['ongkir_gudang'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="ongkir_gudang" name="ongkir_gudang" value="<?= number_format($pemesananFixing['ongkir_gudang'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -234,7 +225,7 @@
                                     <label for="bm" class="form-label">BM</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="bm" name="bm" value="<?= number_format($pembelian['bm'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="bm" name="bm" value="<?= number_format($pemesananFixing['bm'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -243,7 +234,7 @@
                                     <label for="ppn" class="form-label">PPN</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="ppn" name="ppn" value="<?= number_format($pembelian['ppn'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="ppn" name="ppn" value="<?= number_format($pemesananFixing['ppn'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
 
@@ -252,7 +243,7 @@
                                     <label for="pph" class="form-label">PPh</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text px-2">Rp</span>
-                                        <input type="text" class="form-control triger-hitung-total" id="pph" name="pph" value="<?= number_format($pembelian['pph'], 0, ',', '.') ?>">
+                                        <input type="text" class="form-control triger-hitung-total" id="pph" name="pph" value="<?= number_format($pemesananFixing['pph'], 0, ',', '.') ?>">
                                     </div>
                                 </div>
                             </div>
@@ -267,18 +258,18 @@
                             <div class="card-body" style="background-color: #E6ECF0;">
                                 <div class="mb-4">
                                     <h4>Grand Total :</h4>
-                                    <h1 id="text_grand_total">Rp. <?= number_format($pembelian['exw'] + $pembelian['hf'] + $pembelian['ppn_hf'] + $pembelian['ongkir_port'] + $pembelian['ongkir_laut_udara'] + $pembelian['ongkir_transit'] + $pembelian['ongkir_gudang'] + $pembelian['bm'] + $pembelian['ppn'] + $pembelian['pph'], 0, ',', '.') ?></h1>
+                                    <h1 id="text_grand_total">Rp. <?= number_format($pemesananFixing['exw'] + $pemesananFixing['hf'] + $pemesananFixing['ppn_hf'] + $pemesananFixing['ongkir_port'] + $pemesananFixing['ongkir_laut_udara'] + $pemesananFixing['ongkir_transit'] + $pemesananFixing['ongkir_gudang'] + $pemesananFixing['bm'] + $pemesananFixing['ppn'] + $pemesananFixing['pph'], 0, ',', '.') ?></h1>
                                 </div>
 
                                 <div class="mb-4">
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Catatan pembelian ..." id="catatan" name="catatan" style="height: 100px"><?= $pembelian['catatan'] ?></textarea>
+                                        <textarea class="form-control" placeholder="Catatan pembelian ..." id="catatan" name="catatan" style="height: 100px"><?= $pemesananFixing['catatan'] ?></textarea>
                                         <label for="catatan">Catatan Pembelian</label>
                                     </div>
                                 </div>
 
                                 <div class="d-grid gap-2">
-                                    <button type="button" class="btn btn-success" id="simpan_pembelian">Simpan Pembelian <i class="fa-solid fa-floppy-disk"></i></button>
+                                    <button type="button" class="btn btn-success" id="simpan_pemesanan_fixing">Simpan <i class="fa-solid fa-floppy-disk"></i></button>
                                 </div>
                                 <br>
                                 <div class="d-grid gap-2">
@@ -362,17 +353,17 @@
     })
 
 
-    function ganti_no_pembelian() {
+    function ganti_no_pemesanan() {
         let tanggal = $('#tanggal').val()
         $.ajax({
             type: "post",
-            url: "<?= site_url() ?>purchase-ganti_no_pembelian",
+            url: "<?= site_url() ?>purchase-ganti_no_pemesanan",
             data: 'tanggal=' + tanggal,
             dataType: "json",
             success: function(response) {
-                if (response.no_pembelian) {
-                    $('#text_no_pembelian').html('Nomor Pembelian : <b>' + response.no_pembelian + '</b>');
-                    $('#no_pembelian').val(response.no_pembelian)
+                if (response.no_pemesanan) {
+                    $('#text_no_pemesanan').html('Nomor Pemesanan : <b>' + response.no_pemesanan + '</b>');
+                    $('#no_pemesanan').val(response.no_pemesanan)
                 } else {
                     Swal.fire(
                         'Opss.',
@@ -389,11 +380,11 @@
 
 
     function load_list() {
-        let id_pembelian = '<?= $pembelian['id'] ?>'
+        let id_pemesanan_fixing = '<?= $pemesananFixing['id'] ?>'
         $.ajax({
             type: "post",
-            url: "<?= site_url() ?>purchase-produks_pembelian",
-            data: 'id_pembelian=' + id_pembelian,
+            url: "<?= site_url() ?>purchase-produks_pemesanan_fixing",
+            data: 'id_pemesanan_fixing=' + id_pemesanan_fixing,
             dataType: "json",
             success: function(response) {
                 $('#tabel_list_produk').html(response.list)
@@ -416,13 +407,13 @@
     $('#tambah_produk').click(function() {
         let id_produk = $('#id_produk').val();
         let qty = $('#qty').val();
-        let id_pembelian = '<?= $pembelian['id'] ?>'
+        let id_pemesanan_fixing = '<?= $pemesananFixing['id'] ?>'
 
         if (id_produk != '' && qty != '') {
             $.ajax({
                 type: "post",
                 url: "<?= site_url() ?>purchase-fixing_produk_create",
-                data: 'id_pembelian=' + id_pembelian +
+                data: 'id_pemesanan_fixing=' + id_pemesanan_fixing +
                     '&id_produk=' + id_produk +
                     '&qty=' + qty,
                 dataType: "json",
@@ -483,7 +474,7 @@
     }
 
 
-    $('#simpan_pembelian').click(function() {
+    $('#simpan_pemesanan_fixing').click(function() {
         if ($('#gudang').val() == '') {
             $('#gudang').removeClass('is-valid');
             $('#gudang').addClass('is-invalid');
@@ -528,22 +519,24 @@
         }
 
         if ($('#gudang').val() != '' && $('#dimensi').val() != '' && $('#berat').val() != '' && $('#carton_koli').val() != '') {
-            simpan_pembelian();
+            simpan_pemesanan_fixing();
         }
     })
 
 
-    function simpan_pembelian() {
-        let id_pembelian = '<?= $pembelian['id'] ?>'
+    function simpan_pemesanan_fixing() {
+        let id_pemesanan_fixing = '<?= $pemesananFixing['id'] ?>'
+        let id_pemesanan = '<?= $pemesananFixing['id_pemesanan'] ?>'
         $.ajax({
             type: "post",
-            url: "<?= site_url() ?>purchase-simpan_pembelian",
-            data: 'id_pembelian=' + id_pembelian +
-                '&invoice=' + $('#invoice').val() +
-                '&no_pembelian=' + $('#no_pembelian').val() +
-                '&tanggal=' + $('#tanggal').val() +
-                '&id_supplier=' + $('#supplier').val() +
+            url: "<?= site_url() ?>purchase-simpan_pemesanan_fixing",
+            data: 'id_pemesanan_fixing=' + id_pemesanan_fixing +
+                '&id_pemesanan=' + id_pemesanan +
+                '&id_user=' + $('#id_user').val() +
                 '&id_gudang=' + $('#gudang').val() +
+                '&invoice=' + $('#invoice').val() +
+                '&no_pemesanan=' + $('#no_pemesanan').val() +
+                '&tanggal=' + $('#tanggal').val() +
                 '&panjang=' + $('#panjang').val() +
                 '&lebar=' + $('#lebar').val() +
                 '&tinggi=' + $('#tinggi').val() +
@@ -564,7 +557,7 @@
             dataType: "json",
             success: function(response) {
                 if (response.ok) {
-                    <?php session()->setFlashdata('pesan', 'Berhasil menyimpan fixing pembelian.'); ?>
+                    <?php session()->setFlashdata('pesan', 'Berhasil menyimpan fixing pemesanan.'); ?>
                     location.href = '<?= site_url("purchase-fixing_pemesanan?pesan=" . urlencode(session('pesan'))) ?>';
                 } else {
                     Swal.fire(
@@ -638,12 +631,58 @@
     })
 
 
+    function update_pemesanan_fixing() {
+        let id_pemesanan_fixing = '<?= $pemesananFixing['id'] ?>'
+        let id_pemesanan = '<?= $pemesananFixing['id_pemesanan'] ?>'
+        $.ajax({
+            type: "post",
+            url: "<?= site_url() ?>purchase-simpan_pemesanan_fixing",
+            data: 'id_pemesanan_fixing=' + id_pemesanan_fixing +
+                '&id_pemesanan=' + id_pemesanan +
+                '&id_user=' + $('#id_user').val() +
+                '&id_gudang=' + $('#gudang').val() +
+                '&invoice=' + $('#invoice').val() +
+                '&no_pemesanan=' + $('#no_pemesanan').val() +
+                '&tanggal=' + $('#tanggal').val() +
+                '&panjang=' + $('#panjang').val() +
+                '&lebar=' + $('#lebar').val() +
+                '&tinggi=' + $('#tinggi').val() +
+                '&berat=' + $('#berat').val() +
+                '&carton_koli=' + $('#carton_koli').val() +
+                '&exw=' + $('#exw').val() +
+                '&hf=' + $('#hf').val() +
+                '&ppn_hf=' + $('#ppn_hf').val() +
+                '&ongkir_port=' + $('#ongkir_port').val() +
+                '&ongkir_laut_udara=' + $('#ongkir_laut_udara').val() +
+                '&ongkir_transit=' + $('#ongkir_transit').val() +
+                '&ongkir_gudang=' + $('#ongkir_gudang').val() +
+                '&bm=' + $('#bm').val() +
+                '&ppn=' + $('#ppn').val() +
+                '&pph=' + $('#pph').val() +
+                '&grand_total=' + $('#grand_total').val() +
+                '&catatan=' + $('#catatan').val(),
+            dataType: "json",
+            success: function(response) {
+                if (!response.ok) {
+                    Swal.fire(
+                        'Opss.',
+                        'Terjadi kesalahan update fixing pemesanan.',
+                        'error'
+                    )
+                }
+            },
+            error: function(e) {
+                alert('Error \n' + e.responseText);
+            }
+        });
+    }
+
     function buat_pembelian() {
-        let id_pembelian = '<?= $pembelian['id'] ?>'
+        let id_pemesanan_fixing = '<?= $pemesananFixing['id'] ?>'
         $.ajax({
             type: "post",
             url: "<?= site_url() ?>purchase-check_produk_pembelian",
-            data: 'id_pembelian=' + id_pembelian,
+            data: 'id_pemesanan_fixing=' + id_pemesanan_fixing,
             dataType: "json",
             success: function(response) {
                 if (response.ok) {
@@ -657,6 +696,7 @@
                         confirmButtonText: 'Ya, Lanjut!'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            update_pemesanan_fixing()
                             $('#form_pembelian').submit();
                         }
                     })

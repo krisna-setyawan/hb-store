@@ -3,11 +3,10 @@
 namespace App\Controllers\Purchase;
 
 use App\Models\Purchase\GudangModel;
-use App\Models\Purchase\PembelianDetailModel;
-use App\Models\Purchase\PembelianModel;
+use App\Models\Purchase\PemesananFixingDetailModel;
+use App\Models\Purchase\PemesananFixingModel;
 use App\Models\Purchase\PemesananModel;
 use App\Models\Purchase\ProdukModel;
-use App\Models\Purchase\SupplierModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 
 class Pemesanan_detail_fixing extends ResourcePresenter
@@ -15,22 +14,19 @@ class Pemesanan_detail_fixing extends ResourcePresenter
     protected $helpers = ['user_admin_helper', 'nomor_auto_helper'];
 
 
-    public function ListFixing($no_pemesanan)
+    public function detailFixing($no_pemesanan)
     {
-        $modelSupplier = new SupplierModel();
-        $supplier = $modelSupplier->findAll();
         $modelProduk = new ProdukModel();
         $produk = $modelProduk->findAll();
         $modelGudang = new GudangModel();
         $gudang = $modelGudang->findAll();
         $pemesananModel = new PemesananModel();
-        $pembelianModel = new PembelianModel();
+        $pemesananFixingModel = new PemesananFixingModel();
         $pemesanan = $pemesananModel->getPemesanan($no_pemesanan);
 
         $data = [
-            'pembelian'             => $pembelianModel->getPembelianByIdPemesanan($pemesanan['id']),
+            'pemesananFixing'       => $pemesananFixingModel->getPemesananFixingByIdPemesanan($pemesanan['id']),
             'pemesanan'             => $pemesanan,
-            'supplier'              => $supplier,
             'produk'                => $produk,
             'gudang'                => $gudang,
         ];
@@ -38,21 +34,21 @@ class Pemesanan_detail_fixing extends ResourcePresenter
     }
 
 
-    public function getListProdukPembelian()
+    public function getListProdukPemesananFixing()
     {
         if ($this->request->isAJAX()) {
 
-            $modelPembelian = new PembelianModel();
-            $modelPembelianDetail = new PembelianDetailModel();
+            $pemesananFixingModel = new PemesananFixingModel();
+            $modelPemesananFixing = new PemesananFixingDetailModel();
 
-            $id_pembelian = $this->request->getVar('id_pembelian');
-            $pembelian = $modelPembelian->find($id_pembelian);
-            $produk_pembelian = $modelPembelianDetail->getListProdukPembelian($id_pembelian);
+            $id_pemesanan_fixing = $this->request->getVar('id_pemesanan_fixing');
+            $pemesananFixingModel = $pemesananFixingModel->find($id_pemesanan_fixing);
+            $list_produk_fixing = $modelPemesananFixing->getListProdukPemesananFixing($id_pemesanan_fixing);
 
-            if ($produk_pembelian) {
+            if ($list_produk_fixing) {
                 $data = [
-                    'produk_pembelian'      => $produk_pembelian,
-                    'pembelian'             => $pembelian
+                    'list_produk_fixing'    => $list_produk_fixing,
+                    'pemesananFixing'       => $pemesananFixingModel
                 ];
 
                 $json = [
@@ -71,63 +67,49 @@ class Pemesanan_detail_fixing extends ResourcePresenter
     }
 
 
-    public function gantiNoPembelian()
-    {
-        if ($this->request->isAJAX()) {
-            $tanggal = $this->request->getVar('tanggal');
-
-            $json = [
-                'no_pembelian'  => nomor_pembelian_auto($tanggal)
-            ];
-
-            echo json_encode($json);
-        } else {
-            return 'Tidak bisa load';
-        }
-    }
-
-
     public function create()
     {
         $id_produk = $this->request->getPost('id_produk');
-        $id_pembelian = $this->request->getPost('id_pembelian');
+        $id_pemesanan_fixing = $this->request->getPost('id_pemesanan_fixing');
 
         $modelProduk = new ProdukModel();
         $produk = $modelProduk->find($id_produk);
 
-        $modelPembelianDetail = new PembelianDetailModel();
-        $cek_produk = $modelPembelianDetail->where(['id_produk' => $id_produk, 'id_pembelian' => $id_pembelian])->first();
+        $modelPemesananFixingDetail = new PemesananFixingDetailModel();
+        $cek_produk = $modelPemesananFixingDetail->where(['id_produk' => $id_produk, 'id_pemesanan_fixing' => $id_pemesanan_fixing])->first();
 
         if ($cek_produk) {
             $data_update = [
                 'id'                    => $cek_produk['id'],
-                'id_pembelian'          => $id_pembelian,
+                'id_pemesanan_fixing'   => $id_pemesanan_fixing,
                 'id_produk'             => $this->request->getPost('id_produk'),
+                'sku'                   => $cek_produk['sku'],
                 'qty'                   => $cek_produk['qty'] + $this->request->getPost('qty'),
                 'harga_satuan'          => $cek_produk['harga_satuan'],
                 'total_harga'           => $cek_produk['total_harga'] + ($cek_produk['harga_satuan'] * $this->request->getPost('qty')),
             ];
-            $modelPembelianDetail->save($data_update);
+            $modelPemesananFixingDetail->save($data_update);
         } else {
             $data = [
-                'id_pembelian'          => $id_pembelian,
+                'id_pemesanan_fixing'   => $id_pemesanan_fixing,
                 'id_produk'             => $this->request->getPost('id_produk'),
+                'sku'                   => $produk['sku'],
                 'qty'                   => $this->request->getPost('qty'),
                 'harga_satuan'          => $produk['harga_beli'],
                 'total_harga'           => ($produk['harga_beli'] * $this->request->getPost('qty')),
             ];
-            $modelPembelianDetail->save($data);
+            $modelPemesananFixingDetail->save($data);
         }
 
-        $modelPembelian = new PembelianModel();
-        $sum = $modelPembelianDetail->sumTotalHargaProduk($id_pembelian);
+        $modelPemesananFixing = new PemesananFixingModel();
+        $sum = $modelPemesananFixingDetail->sumTotalHargaProduk($id_pemesanan_fixing);
 
         $data_update = [
-            'id'                    => $id_pembelian,
+            'id'                    => $id_pemesanan_fixing,
             'grand_total'           => $sum['total_harga'],
             'exw'                   => $sum['total_harga'],
         ];
-        $modelPembelian->save($data_update);
+        $modelPemesananFixing->save($data_update);
 
         $json = [
             'notif' => 'Berhasil menambah list produk pembelian',
@@ -140,10 +122,9 @@ class Pemesanan_detail_fixing extends ResourcePresenter
 
     public function update($id = null)
     {
-
         $data = json_decode(file_get_contents('php://input'), true);
 
-        $modelPembelianDetail = new PembelianDetailModel();
+        $modelPemesananFixingDetail = new PemesananFixingDetailModel();
         $harga_satuan = str_replace(".", "", $data['new_harga_satuan']);
         $data_update_produk = [
             'id'                    => $id,
@@ -151,16 +132,16 @@ class Pemesanan_detail_fixing extends ResourcePresenter
             'harga_satuan'          => $harga_satuan,
             'total_harga'           => $harga_satuan * $data['new_qty'],
         ];
-        $modelPembelianDetail->save($data_update_produk);
+        $modelPemesananFixingDetail->save($data_update_produk);
 
-        $modelPembelian = new PembelianModel();
-        $sum = $modelPembelianDetail->sumTotalHargaProduk($data['id_pembelian']);
+        $modelPemesananFixing = new PemesananFixingModel();
+        $sum = $modelPemesananFixingDetail->sumTotalHargaProduk($data['id_pemesanan_fixing']);
         $data_update_pembelian = [
-            'id'                    => $data['id_pembelian'],
+            'id'                    => $data['id_pemesanan_fixing'],
             'grand_total'           => $sum['total_harga'],
             'exw'                   => $sum['total_harga'],
         ];
-        $modelPembelian->save($data_update_pembelian);
+        $modelPemesananFixing->save($data_update_pembelian);
 
         $json = [
             'notif' => 'Berhasil update list produk pembelian',
@@ -173,25 +154,21 @@ class Pemesanan_detail_fixing extends ResourcePresenter
 
     public function delete($id = null)
     {
-        $id_pembelian = $this->request->getPost('id_pembelian');
-        $modelPembelian = new PembelianModel();
-        $modelPemesanan = new PemesananModel();
+        $id_pemesanan_fixing = $this->request->getPost('id_pemesanan_fixing');
+        $modelPemesananFixing = new PemesananFixingModel();
+        $no_pemesanan = $modelPemesananFixing->find($id_pemesanan_fixing)['no_pemesanan'];
 
-        $id_pemesanan = $modelPembelian->find($id_pembelian)['id_pemesanan'];
-        $no_pemesanan = $modelPemesanan->find($id_pemesanan)['no_pemesanan'];
+        $modelPemesananFixingDetail = new PemesananFixingDetailModel();
+        $modelPemesananFixingDetail->delete($id);
 
-        $modelPembelianDetail = new PembelianDetailModel();
-
-        $modelPembelianDetail->delete($id);
-
-        $sum = $modelPembelianDetail->sumTotalHargaProduk($id_pembelian);
+        $sum = $modelPemesananFixingDetail->sumTotalHargaProduk($id_pemesanan_fixing);
 
         $data_update = [
-            'id'                    => $id_pembelian,
+            'id'                    => $id_pemesanan_fixing,
             'grand_total'           => $sum['total_harga'],
             'exw'                   => $sum['total_harga'],
         ];
-        $modelPembelian->save($data_update);
+        $modelPemesananFixing->save($data_update);
 
         session()->setFlashdata('pesan', 'List Produk berhasil dihapus.');
         return redirect()->to('/purchase-list_fixing/' . $no_pemesanan);

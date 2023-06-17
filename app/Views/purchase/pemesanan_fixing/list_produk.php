@@ -1,6 +1,6 @@
 <?php
 $no = 1;
-foreach ($produk_pembelian as $pr) : ?>
+foreach ($list_produk_fixing as $pr) : ?>
     <tr style="vertical-align: middle;">
         <td><?= $no++ ?></td>
         <td><?= $pr['sku'] ?></td>
@@ -26,7 +26,7 @@ foreach ($produk_pembelian as $pr) : ?>
             <form id="form_delete" method="POST" class="d-inline">
                 <?= csrf_field() ?>
                 <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="id_pembelian" value="<?= $pr['id_pembelian'] ?>">
+                <input type="hidden" name="id_pemesanan_fixing" value="<?= $pr['id_pemesanan_fixing'] ?>">
             </form>
             <button onclick="confirm_delete(<?= $pr['id'] ?>)" title="Hapus" type="button" class="px-2 py-0 btn btn-sm btn-outline-danger"><i class="fa-fw fa-solid fa-xmark"></i></button>
 
@@ -35,7 +35,7 @@ foreach ($produk_pembelian as $pr) : ?>
 <?php endforeach; ?>
 <tr class="fs-5">
     <td colspan="5" class="text-end fw-bold pe-4 py-2">Total</td>
-    <td colspan="2" class="py-2">Rp. <?= number_format($pembelian['grand_total'], 0, ',', '.')  ?></td>
+    <td colspan="2" class="py-2">Rp. <?= number_format($pemesananFixing['grand_total'], 0, ',', '.')  ?></td>
 </tr>
 
 <script>
@@ -76,7 +76,7 @@ foreach ($produk_pembelian as $pr) : ?>
             url: "<?= site_url() ?>purchase-fixing_produk_update/" + id,
             type: 'PUT',
             data: JSON.stringify({
-                id_pembelian: '<?= $pembelian['id'] ?>',
+                id_pemesanan_fixing: '<?= $pemesananFixing['id'] ?>',
                 new_harga_satuan: $('#new_harga_satuan_' + id).val(),
                 new_qty: $('#new_qty_' + id).val()
             }),

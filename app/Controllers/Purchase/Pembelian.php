@@ -10,6 +10,8 @@ use App\Models\Purchase\JurnalModel;
 use App\Models\Purchase\PembelianDetailModel;
 use App\Models\Purchase\PembelianModel;
 use App\Models\Purchase\PemesananDetailModel;
+use App\Models\Purchase\PemesananFixingDetailModel;
+use App\Models\Purchase\PemesananFixingModel;
 use App\Models\Purchase\PemesananModel;
 use App\Models\Purchase\SupplierModel;
 use App\Models\Purchase\TagihanModel;
@@ -113,128 +115,73 @@ class Pembelian extends ResourcePresenter
     public function create()
     {
         $modelPembelian = new PembelianModel();
+        $modelPembelianDetail = new PembelianDetailModel();
         $modelPemesanan = new PemesananModel();
-        $modelPembelianDetail = new PembelianDetailModel();
-        $modelPemesananDetail = new PemesananDetailModel();
-        $pemesanan = $modelPemesanan->getPemesanan($this->request->getPost('no_pemesanan'));
-        $pembelian = $modelPembelian->getPembelianByIdPemesanan($pemesanan['id']);
 
-        if ($pembelian) {
-            return redirect()->to('/purchase-list_fixing/' . $this->request->getPost('no_pemesanan'));
-        } else {
+        $modelPemesananFixing = new PemesananFixingModel();
+        $modelPemesananFixingDetail = new PemesananFixingDetailModel();
+        $pemesananFixing = $modelPemesananFixing->find($this->request->getPost('id_pemesanan_fixing'));
 
-            date_default_timezone_set('Asia/Jakarta');
-            $no_pembelian = nomor_pembelian_auto(date('Y-m-d'));
-
-            $data = [
-                'id_pemesanan'          => $pemesanan['id'],
-                'id_supplier'           => $pemesanan['id_supplier'],
-                'id_user'               => $pemesanan['id_user'],
-                'no_pembelian'          => $no_pembelian,
-                'tanggal'               => date('Y-m-d'),
-                'panjang'               => 1,
-                'lebar'                 => 1,
-                'tinggi'                => 1,
-                'berat'                 => 1,
-                'carton_koli'           => 1,
-                'grand_total'           => $pemesanan['total_harga_produk'],
-                'exw'                   => $pemesanan['total_harga_produk'],
-                'status'                => 'Fixing',
-            ];
-            $modelPembelian->save($data);
-            $id_pembelian = $modelPembelian->getInsertID();
-
-            $listProdukPemesanan = $modelPemesananDetail->where(['id_pemesanan' => $pemesanan['id']])->findAll();
-            foreach ($listProdukPemesanan as $produk) {
-                $data_produk = [
-                    'id_pembelian'          => $id_pembelian,
-                    'id_produk'             => $produk['id_produk'],
-                    'qty'                   => $produk['qty'],
-                    'harga_satuan'          => $produk['harga_satuan'],
-                    'total_harga'           => $produk['total_harga'],
-                ];
-                $modelPembelianDetail->save($data_produk);
-            }
-
-            $data_update_pemesanan = [
-                'id'                    => $pemesanan['id'],
-                'status'                => 'Fixing'
-            ];
-            $modelPemesanan->save($data_update_pemesanan);
-
-            return redirect()->to('/purchase-list_fixing/' . $this->request->getPost('no_pemesanan'));
-        }
-    }
-
-
-    public function checkProdukPembelian()
-    {
-        $id_pembelian = $this->request->getVar('id_pembelian');
-        $modelPembelianDetail = new PembelianDetailModel();
-        $produk = $modelPembelianDetail->where(['id_pembelian' => $id_pembelian])->findAll();
-
-        if ($produk) {
-            $json = ['ok' => 'ok'];
-        } else {
-            $json = ['null' => null];
-        }
-        echo json_encode($json);
-    }
-
-
-    public function simpanPembelian()
-    {
-        if ($this->request->isAJAX()) {
-            $modelPembelian = new PembelianModel();
-            $modelPemesanan = new PemesananModel();
-
-            $data_update_pembelian = [
-                'id'                    => $this->request->getVar('id_pembelian'),
-                'id_supplier'           => $this->request->getVar('id_supplier'),
-                'id_gudang'             => $this->request->getVar('id_gudang'),
-                'no_pembelian'          => $this->request->getVar('no_pembelian'),
-                'invoice'               => $this->request->getVar('invoice'),
-                'tanggal'               => $this->request->getVar('tanggal'),
-                'panjang'               => $this->request->getVar('panjang'),
-                'lebar'                 => $this->request->getVar('lebar'),
-                'tinggi'                => $this->request->getVar('tinggi'),
-                'berat'                 => $this->request->getVar('berat'),
-                'carton_koli'           => $this->request->getVar('carton_koli'),
-                'exw'                   => intval(str_replace(".", "", $this->request->getVar('exw'))),
-                'hf'                    => intval(str_replace(".", "", $this->request->getVar('hf'))),
-                'ppn_hf'                => intval(str_replace(".", "", $this->request->getVar('ppn_hf'))),
-                'ongkir_port'           => intval(str_replace(".", "", $this->request->getVar('ongkir_port'))),
-                'ongkir_laut_udara'     => intval(str_replace(".", "", $this->request->getVar('ongkir_laut_udara'))),
-                'ongkir_transit'        => intval(str_replace(".", "", $this->request->getVar('ongkir_transit'))),
-                'ongkir_gudang'         => intval(str_replace(".", "", $this->request->getVar('ongkir_gudang'))),
-                'bm'                    => intval(str_replace(".", "", $this->request->getVar('bm'))),
-                'ppn'                   => intval(str_replace(".", "", $this->request->getVar('ppn'))),
-                'pph'                   => intval(str_replace(".", "", $this->request->getVar('pph'))),
-                'grand_total'           => $this->request->getVar('grand_total'),
-                'catatan'               => $this->request->getVar('catatan'),
-            ];
-            $modelPembelian->save($data_update_pembelian);
-
-            $pembelian = $modelPembelian->find($this->request->getVar('id_pembelian'));
-            $data_update_pemesanan = [
-                'id'                    => $pembelian['id_pemesanan'],
-                'id_supplier'           => $this->request->getVar('id_supplier'),
-            ];
-            $modelPemesanan->save($data_update_pemesanan);
-
-            $json = ['ok' => 'ok'];
-            echo json_encode($json);
-        } else {
-            return 'Tidak bisa load';
-        }
-    }
-
-
-    public function buatPembelian()
-    {
         date_default_timezone_set('Asia/Jakarta');
+        $no_pembelian = nomor_pembelian_auto(date('Y-m-d'));
 
-        $id_pembelian      = $this->request->getVar('id_pembelian');
+        $data = [
+            'id_pemesanan'          => $pemesananFixing['id_pemesanan'],
+            'id_pemesanan_fixing'   => $pemesananFixing['id'],
+            'id_supplier'           => $pemesananFixing['id_supplier'],
+            'id_user'               => $this->request->getPost('id_user'),
+            'id_gudang'             => $this->request->getPost('id_gudang'),
+            'jenis_supplier'        => $pemesananFixing['jenis_supplier'],
+            'id_perusahaan'         => $pemesananFixing['id_perusahaan'],
+            'no_pembelian'          => $no_pembelian,
+            'invoice'               => $this->request->getPost('invoice'),
+            'tanggal'               => date('Y-m-d'),
+            'panjang'               => $this->request->getPost('panjang'),
+            'lebar'                 => $this->request->getPost('lebar'),
+            'tinggi'                => $this->request->getPost('tinggi'),
+            'berat'                 => $this->request->getPost('berat'),
+            'exw'                   => $this->request->getPost('exw'),
+            'hf'                    => $this->request->getPost('hf'),
+            'ppn_hf'                => $this->request->getPost('ppn_hf'),
+            'ongkir_port'           => $this->request->getPost('ongkir_port'),
+            'ongkir_laut_udara'     => $this->request->getPost('ongkir_laut_udara'),
+            'ongkir_transit'        => $this->request->getPost('ongkir_transit'),
+            'ongkir_gudang'         => $this->request->getPost('ongkir_gudang'),
+            'bm'                    => $this->request->getPost('bm'),
+            'ppn'                   => $this->request->getPost('ppn'),
+            'pph'                   => $this->request->getPost('pph'),
+            'grand_total'           => $this->request->getPost('grand_total'),
+            'status'                => 'Diproses',
+        ];
+        $modelPembelian->save($data);
+        $id_pembelian = $modelPembelian->getInsertID();
+
+        $listProdukPemesanan = $modelPemesananFixingDetail->where(['id_pemesanan_fixing' => $pemesananFixing['id']])->findAll();
+        foreach ($listProdukPemesanan as $produk) {
+            $data_produk = [
+                'id_pembelian'          => $id_pembelian,
+                'id_produk'             => $produk['id_produk'],
+                'qty'                   => $produk['qty'],
+                'harga_satuan'          => $produk['harga_satuan'],
+                'total_harga'           => $produk['total_harga'],
+            ];
+            $modelPembelianDetail->save($data_produk);
+        }
+
+        $data_update_pemesanan = [
+            'id'                    => $pemesananFixing['id_pemesanan'],
+            'status'                => 'Pembelian'
+        ];
+        $modelPemesanan->save($data_update_pemesanan);
+
+        $data_update_pemesanan_fixing = [
+            'id'                    => $pemesananFixing['id'],
+            'status'                => 'Pembelian'
+        ];
+        $modelPemesananFixing->save($data_update_pemesanan_fixing);
+
+
+        // -----------------------------------------------------------------------------------------------------------------------------------------------------
         $exw               = intval(str_replace(".", "", $this->request->getVar('exw')));
         $hf                = intval(str_replace(".", "", $this->request->getVar('hf')));
         $ppn_hf            = intval(str_replace(".", "", $this->request->getVar('ppn_hf')));
@@ -246,61 +193,20 @@ class Pembelian extends ResourcePresenter
         $ppn               = intval(str_replace(".", "", $this->request->getVar('ppn')));
         $pph               = intval(str_replace(".", "", $this->request->getVar('pph')));
 
-        $modelPemesanan = new PemesananModel();
-        $modelPembelian = new PembelianModel();
-
-        $pembelian = $modelPembelian->find($id_pembelian);
-        $detailPembelian = $modelPembelian->getPembelian($this->request->getVar('no_pembelian'));
-
-        $data_update = [
-            'id'                    => $pembelian['id'],
-            'id_user'               => $this->request->getVar('id_admin'),
-            'no_pembelian'          => $this->request->getVar('no_pembelian'),
-            'tanggal'               => $this->request->getVar('tanggal'),
-            'id_supplier'           => $this->request->getVar('supplier'),
-            'id_gudang'             => $this->request->getVar('gudang'),
-            'invoice'               => $this->request->getVar('invoice'),
-            'panjang'               => $this->request->getVar('panjang'),
-            'lebar'                 => $this->request->getVar('lebar'),
-            'tinggi'                => $this->request->getVar('tinggi'),
-            'berat'                 => $this->request->getVar('berat'),
-            'carton_koli'           => $this->request->getVar('carton_koli'),
-            'exw'                   => intval(str_replace(".", "", $this->request->getVar('exw'))),
-            'hf'                    => intval(str_replace(".", "", $this->request->getVar('hf'))),
-            'ppn_hf'                => intval(str_replace(".", "", $this->request->getVar('ppn_hf'))),
-            'ongkir_port'           => intval(str_replace(".", "", $this->request->getVar('ongkir_port'))),
-            'ongkir_laut_udara'     => intval(str_replace(".", "", $this->request->getVar('ongkir_laut_udara'))),
-            'ongkir_transit'        => intval(str_replace(".", "", $this->request->getVar('ongkir_transit'))),
-            'ongkir_gudang'         => intval(str_replace(".", "", $this->request->getVar('ongkir_gudang'))),
-            'bm'                    => intval(str_replace(".", "", $this->request->getVar('bm'))),
-            'ppn'                   => intval(str_replace(".", "", $this->request->getVar('ppn'))),
-            'pph'                   => intval(str_replace(".", "", $this->request->getVar('pph'))),
-            'grand_total'           => $this->request->getVar('grand_total'),
-            'catatan'               => $this->request->getVar('catatan'),
-            'status'                => 'Diproses'
-        ];
-        $modelPembelian->save($data_update);
-
-        $data_update_pemesanan = [
-            'id'                    => $pembelian['id_pemesanan'],
-            'id_supplier'           => $this->request->getVar('supplier'),
-            'status'                => 'Pembelian'
-        ];
-        $modelPemesanan->save($data_update_pemesanan);
-
-
 
         // -------------------------------------------------------------- TAGIHAN ------------------------------------------------------------------------------
         $modelTagihan = new TagihanModel();
         $modelTagihanRincian = new TagihanRincianModel();
+        $detailPembelian = $modelPembelian->getPembelianById($id_pembelian);
+
 
         // input ke tagihan
         $data_tagihan = [
             'id_pembelian'      => $id_pembelian,
-            'no_tagihan'        => $this->request->getVar('no_pembelian') . '-1',
+            'no_tagihan'        => $no_pembelian . '-1',
             'tanggal'           => $this->request->getVar('tanggal'),
             'penerima'          => $detailPembelian['supplier'],
-            'referensi'         => 'Pembelian ' . $this->request->getVar('no_pembelian'),
+            'referensi'         => 'Pembelian ' . $no_pembelian,
             'asal'              => 'Pembelian',
             'jumlah'            => $this->request->getVar('grand_total'),
             'sisa_tagihan'      => $this->request->getVar('grand_total'),
@@ -419,8 +325,6 @@ class Pembelian extends ResourcePresenter
         }
 
 
-
-
         // ---------------------------------------------------------- JURNAL TRANSAKSI -------------------------------------------------------------------------
         $modelTransaksiJurnal = new JurnalModel();
         $modelTransaksiJurnalDetail = new JurnalDetailModel();
@@ -428,7 +332,7 @@ class Pembelian extends ResourcePresenter
         // input ke jurnal transaksi
         $data_jurnal = [
             'nomor_transaksi'   => nomor_jurnal_auto_pembelian(),
-            'referensi'         => $this->request->getVar('no_pembelian') . '-1',
+            'referensi'         => $no_pembelian . '-1',
             'tanggal'           => $this->request->getVar('tanggal'),
             'total_transaksi'   => $this->request->getVar('grand_total'),
         ];
@@ -439,7 +343,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 5,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-EXW',
+                'deskripsi'         => $no_pembelian . '-EXW',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('exw'))),
                 'kredit'            => 0,
             ];
@@ -450,7 +354,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 27,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-HF',
+                'deskripsi'         => $no_pembelian . '-HF',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('hf'))),
                 'kredit'            => 0,
             ];
@@ -461,7 +365,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 6,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-PPN HF',
+                'deskripsi'         => $no_pembelian . '-PPN HF',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('ppn_hf'))),
                 'kredit'            => 0,
             ];
@@ -472,7 +376,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 15,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-Ongkir Port',
+                'deskripsi'         => $no_pembelian . '-Ongkir Port',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('ongkir_port'))),
                 'kredit'            => 0,
             ];
@@ -483,7 +387,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 15,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-Ongkir Laut Udara',
+                'deskripsi'         => $no_pembelian . '-Ongkir Laut Udara',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('ongkir_laut_udara'))),
                 'kredit'            => 0,
             ];
@@ -494,7 +398,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 15,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-Ongkir Transit',
+                'deskripsi'         => $no_pembelian . '-Ongkir Transit',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('ongkir_transit'))),
                 'kredit'            => 0,
             ];
@@ -505,7 +409,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 15,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-Ongkir Gudang',
+                'deskripsi'         => $no_pembelian . '-Ongkir Gudang',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('ongkir_gudang'))),
                 'kredit'            => 0,
             ];
@@ -516,7 +420,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 26,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-BM',
+                'deskripsi'         => $no_pembelian . '-BM',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('bm'))),
                 'kredit'            => 0,
             ];
@@ -527,7 +431,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 6,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-PPN',
+                'deskripsi'         => $no_pembelian . '-PPN',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('ppn'))),
                 'kredit'            => 0,
             ];
@@ -538,7 +442,7 @@ class Pembelian extends ResourcePresenter
             $data_jurnal_detail = [
                 'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
                 'id_akun'           => 26,
-                'deskripsi'         => $this->request->getVar('no_pembelian') . '-PPh',
+                'deskripsi'         => $no_pembelian . '-PPh',
                 'debit'             => intval(str_replace(".", "", $this->request->getVar('pph'))),
                 'kredit'            => 0,
             ];
@@ -550,16 +454,18 @@ class Pembelian extends ResourcePresenter
         $data_jurnal_detail = [
             'id_transaksi'      => $modelTransaksiJurnal->getInsertID(),
             'id_akun'           => 7,
-            'deskripsi'         => $this->request->getVar('no_pembelian') . '-Hutang Dagang',
+            'deskripsi'         => $no_pembelian . '-Hutang Dagang',
             'debit'             => 0,
             'kredit'            => $this->request->getVar('grand_total'),
         ];
         $modelTransaksiJurnalDetail->save($data_jurnal_detail);
 
-
         session()->setFlashdata('pesan', 'Berhasil membuat tagihan pembelian.');
         return redirect()->to('/purchase-fixing_pemesanan');
     }
+
+
+
 
 
     public function isDebit($value)
@@ -586,6 +492,9 @@ class Pembelian extends ResourcePresenter
         $akun = $modelAkun->find($id);
         return $akun;
     }
+
+
+
 
 
     public function tambahTagihan()

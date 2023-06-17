@@ -2,6 +2,9 @@
 
 namespace App\Controllers\Purchase;
 
+use App\Models\Purchase\PemesananFixingDetailModel;
+use App\Models\Purchase\PemesananFixingModel;
+use App\Models\Purchase\PemesananModel;
 use CodeIgniter\RESTful\ResourcePresenter;
 use \Hermawan\DataTables\DataTable;
 
@@ -45,5 +48,68 @@ class Pemesanan_fixing extends ResourcePresenter
         } else {
             return "Tidak bisa load data.";
         }
+    }
+
+
+    public function simpanUpdate()
+    {
+        if ($this->request->isAJAX()) {
+            $pemesananFixingModel = new PemesananFixingModel();
+
+            $data_update_pemesanan_fixing = [
+                'id'                    => $this->request->getVar('id_pemesanan_fixing'),
+                'id_user'               => $this->request->getVar('id_user'),
+                'id_gudang'             => $this->request->getVar('id_gudang'),
+                'invoice'               => $this->request->getVar('invoice'),
+                'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
+                'tanggal'               => $this->request->getVar('tanggal'),
+                'panjang'               => $this->request->getVar('panjang'),
+                'lebar'                 => $this->request->getVar('lebar'),
+                'tinggi'                => $this->request->getVar('tinggi'),
+                'berat'                 => $this->request->getVar('berat'),
+                'carton_koli'           => $this->request->getVar('carton_koli'),
+                'exw'                   => intval(str_replace(".", "", $this->request->getVar('exw'))),
+                'hf'                    => intval(str_replace(".", "", $this->request->getVar('hf'))),
+                'ppn_hf'                => intval(str_replace(".", "", $this->request->getVar('ppn_hf'))),
+                'ongkir_port'           => intval(str_replace(".", "", $this->request->getVar('ongkir_port'))),
+                'ongkir_laut_udara'     => intval(str_replace(".", "", $this->request->getVar('ongkir_laut_udara'))),
+                'ongkir_transit'        => intval(str_replace(".", "", $this->request->getVar('ongkir_transit'))),
+                'ongkir_gudang'         => intval(str_replace(".", "", $this->request->getVar('ongkir_gudang'))),
+                'bm'                    => intval(str_replace(".", "", $this->request->getVar('bm'))),
+                'ppn'                   => intval(str_replace(".", "", $this->request->getVar('ppn'))),
+                'pph'                   => intval(str_replace(".", "", $this->request->getVar('pph'))),
+                'grand_total'           => $this->request->getVar('grand_total'),
+                'catatan'               => $this->request->getVar('catatan'),
+            ];
+            $pemesananFixingModel->save($data_update_pemesanan_fixing);
+
+            $modelPemesanan = new PemesananModel();
+            $data_update_pemesanan = [
+                'id'                    => $this->request->getVar('id_pemesanan'),
+                'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
+                'tanggal'               => $this->request->getVar('tanggal'),
+            ];
+            $modelPemesanan->save($data_update_pemesanan);
+
+            $json = ['ok' => 'ok'];
+            echo json_encode($json);
+        } else {
+            return 'Tidak bisa load';
+        }
+    }
+
+
+    public function checkExistProdukPembelian()
+    {
+        $id_pemesanan_fixing = $this->request->getVar('id_pemesanan_fixing');
+        $modelPemesananFixingDetail = new PemesananFixingDetailModel();
+        $produk = $modelPemesananFixingDetail->where(['id_pemesanan_fixing' => $id_pemesanan_fixing])->findAll();
+
+        if ($produk) {
+            $json = ['ok' => 'ok'];
+        } else {
+            $json = ['null' => null];
+        }
+        echo json_encode($json);
     }
 }

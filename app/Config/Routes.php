@@ -330,16 +330,18 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     // Fixing Pemesanan
     $routes->get('purchase-fixing_pemesanan', 'Purchase\Pemesanan_fixing::index', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-get_pemesanan_ordered', 'Purchase\Pemesanan_fixing::getDataPemesananOrdered', ['filter' => 'permission:Pembelian']);
+    $routes->post('purchase-simpan_pemesanan_fixing', 'Purchase\Pemesanan_fixing::simpanUpdate', ['filter' => 'permission:Pembelian']);
+    $routes->post('purchase-check_produk_pembelian', 'Purchase\Pemesanan_fixing::checkExistProdukPembelian', ['filter' => 'permission:Pembelian']);
 
     // Fixing Pemesanan Detail
-    $routes->get('purchase-list_fixing/(:any)', 'Purchase\Pemesanan_detail_fixing::ListFixing/$1', ['filter' => 'permission:Pembelian']);
-    $routes->post('purchase-produks_pembelian', 'Purchase\Pemesanan_detail_fixing::getListProdukPembelian', ['filter' => 'permission:Pembelian']);
-    $routes->post('purchase-ganti_no_pembelian', 'Purchase\Pemesanan_detail_fixing::gantiNoPembelian', ['filter' => 'permission:Pembelian']);
+    $routes->get('purchase-list_fixing/(:any)', 'Purchase\Pemesanan_detail_fixing::detailFixing/$1', ['filter' => 'permission:Pembelian']);
+    $routes->post('purchase-produks_pemesanan_fixing', 'Purchase\Pemesanan_detail_fixing::getListProdukPemesananFixing', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-fixing_produk_create', 'Purchase\Pemesanan_detail_fixing::create', ['filter' => 'permission:Pembelian']);
     $routes->put('purchase-fixing_produk_update/(:any)', 'Purchase\Pemesanan_detail_fixing::update/$1', ['filter' => 'permission:Pembelian']);
     $routes->delete('purchase-fixing_produk_delete/(:any)', 'Purchase\Pemesanan_detail_fixing::delete/$1', ['filter' => 'permission:Pembelian']);
 
     // Pembelian
+    $routes->post('purchase-buat_pembelian', 'Purchase\Pembelian::create', ['filter' => 'permission:Pembelian']);
     $routes->resource('purchase-pembelian', ['controller' => 'Purchase\Pembelian', 'filter' => 'permission:Pembelian']);
     $routes->get('purchase-get_data_pembelian', 'Purchase\Pembelian::getDataPembelian', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-show_data_pembelian/(:any)', 'Purchase\Pembelian::show/$1', ['filter' => 'permission:Pembelian']);
@@ -349,9 +351,6 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     $routes->get('purchase-show_pembayaran_tagihan/(:any)', 'Purchase\Pembelian::showPembayaranTagihan/$1', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-get_list_inbound_pembelian/(:any)', 'Purchase\Pembelian::listInboundPembelian/$1');
     $routes->get('purchase-show_detail_inbound/(:any)', 'Purchase\Pembelian::showDetailInbound/$1');
-    $routes->post('purchase-check_produk_pembelian', 'Purchase\Pembelian::checkProdukPembelian', ['filter' => 'permission:Pembelian']);
-    $routes->post('purchase-simpan_pembelian', 'Purchase\Pembelian::simpanPembelian', ['filter' => 'permission:Pembelian']);
-    $routes->post('purchase-buat_pembelian', 'Purchase\Pembelian::buatPembelian', ['filter' => 'permission:Pembelian']);
 
 
 
