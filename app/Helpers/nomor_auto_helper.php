@@ -1,5 +1,36 @@
 <?php
 
+use CodeIgniter\Config\Services;
+
+function get_data_perushaan($id_perusahaan)
+{
+    $client = Services::curlrequest();
+
+    $url_get_perusahaan = $_ENV['URL_API'] . 'public/get-perusahaan/' . $id_perusahaan;
+    $response_get_perusahaan = $client->request('GET', $url_get_perusahaan);
+    $status = $response_get_perusahaan->getStatusCode();
+    $responseJson = $response_get_perusahaan->getBody();
+    $responseArray = json_decode($responseJson, true);
+    $perusahaan = $responseArray['data_perusahaan'][0];
+
+    return $perusahaan;
+}
+
+
+
+
+
+// membuat kode api transaksi unik
+function get_kode_trx_api()
+{
+    $timestamp = time(); // Mendapatkan UNIX timestamp saat ini
+    $kode_unik = uniqid($timestamp, true); // Menggabungkan timestamp dengan ID unik
+    return $kode_unik;
+}
+
+
+
+
 
 function nomor_pemesanan_auto($tgl)
 {

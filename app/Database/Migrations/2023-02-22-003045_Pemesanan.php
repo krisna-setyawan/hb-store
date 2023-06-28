@@ -12,9 +12,12 @@ class Pemesanan extends Migration
         $fields = [
             'id'                    => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
             'id_supplier'           => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'null' => true],
+            'jenis_supplier'        => ['type' => 'enum', 'constraint' => ['Non-Haebot', 'Haebot'], 'default' => 'Non-Haebot'],
+            'id_perusahaan'         => ['type' => 'VARCHAR', 'constraint' => 30, 'null' => true],
             'id_user'               => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'null' => true],
             'id_gudang'             => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'null' => true],
             'no_pemesanan'          => ['type' => 'varchar', 'constraint' => 30],
+            'kode_trx_api'          => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
             'tanggal'               => ['type' => 'date'],
             'total_harga_produk'    => ['type' => 'int', 'unsigned' => true],
             'status'                => ['type' => 'enum', 'constraint' => ['Pending', 'Ordered', 'Waiting', 'Ditolak', 'Fixing', 'Pembelian', 'Dikirim', 'Sampai', 'Batal', 'Dihapus'], 'default' => 'Pending'],

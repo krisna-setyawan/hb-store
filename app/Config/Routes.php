@@ -40,6 +40,7 @@ $routes->get('hbapi-get-produk/(:any)', 'Api\Produk::show/$1');
 $routes->post('hbapi-give-notif', 'Api\Notifikasi::create');
 
 $routes->post('hbapi-sent-penjualan-order', 'Api\PenjualanOrder::create');
+$routes->get('hbapi-get-detail-pemesanan/(:any)', 'Api\Pemesanan::show/$1');
 
 
 

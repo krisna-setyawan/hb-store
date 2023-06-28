@@ -19,6 +19,7 @@ class Pembelian extends Migration
             'jenis_supplier'        => ['type' => 'enum', 'constraint' => ['Non-Haebot', 'Haebot'], 'default' => 'Non-Haebot'],
             'id_perusahaan'         => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
             'no_pembelian'          => ['type' => 'varchar', 'constraint' => 30],
+            'kode_trx_api'          => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
             'invoice'               => ['type' => 'varchar', 'constraint' => 30],
             'tanggal'               => ['type' => 'date'],
             'status'                => ['type' => 'enum', 'constraint' => ['Diproses', 'Dikirim', 'Sampai', 'Gagal'], 'default' => 'Diproses'],

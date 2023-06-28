@@ -225,18 +225,14 @@ class Pemesanan extends ResourcePresenter
             $client = Services::curlrequest();
 
             // Get data perusahaan
-            $url_get_perusahaan = $_ENV['URL_API'] . 'public/get-perusahaan/' . $supplier['id_perusahaan'];
-            $response_get_perusahaan = $client->request('GET', $url_get_perusahaan);
-            $status = $response_get_perusahaan->getStatusCode();
-            $responseJson = $response_get_perusahaan->getBody();
-            $responseArray = json_decode($responseJson, true);
-            $perusahaan = $responseArray['data_perusahaan'][0];
+            $perusahaan = get_data_perushaan($supplier['id_perusahaan']);
 
             // Sent data Order (Haebot Order / Penjualan Order)
             $url_sent_order = $perusahaan['url'] . 'hbapi-sent-penjualan-order';
             $data_order = [
                 'id_pemesanan'      => $pemesanan['id'],
                 'no_pemesanan'      => $this->request->getVar('no_pemesanan'),
+                'kode_trx_api'      => get_kode_trx_api(),
                 'id_perusahaan'     => $_ENV['ID_PERUSAHAAN'],
                 'nama_perusahaan'   => $_ENV['NAMA_PERUSAHAAN'],
                 'tanggal'           => $this->request->getVar('tanggal'),

@@ -19,6 +19,7 @@ class FixingPemesanan extends Migration
             'id_perusahaan'         => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
             'invoice'               => ['type' => 'varchar', 'constraint' => 30],
             'no_pemesanan'          => ['type' => 'varchar', 'constraint' => 30],
+            'kode_trx_api'          => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
             'tanggal'               => ['type' => 'date'],
             'status'                => ['type' => 'enum', 'constraint' => ['Fixing', 'Waiting', 'Nego', 'Ok', 'Batal', 'Pembelian'], 'default' => 'Fixing'],
             'panjang'               => ['type' => 'int', 'constraint' => 11],

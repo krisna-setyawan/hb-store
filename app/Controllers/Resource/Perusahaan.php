@@ -7,7 +7,7 @@ use CodeIgniter\Config\Services;
 
 class Perusahaan extends ResourcePresenter
 {
-    protected $helpers = ['form'];
+    protected $helpers = ['form', 'nomor_auto_helper'];
 
     public function index()
     {
@@ -56,12 +56,7 @@ class Perusahaan extends ResourcePresenter
     public function produk($id_perusahaan = null)
     {
         $client = Services::curlrequest();
-        $url = $_ENV['URL_API'] . 'public/get-perusahaan/' . $id_perusahaan;
-        $response = $client->request('GET', $url);
-        $status = $response->getStatusCode();
-        $responseJson = $response->getBody();
-        $responseArray = json_decode($responseJson, true);
-        $perusahaan = $responseArray['data_perusahaan'][0];
+        $perusahaan = get_data_perushaan($id_perusahaan);
 
         // produk
         $url_produk = $perusahaan['url'] . 'hbapi-get-produks';
