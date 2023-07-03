@@ -23,9 +23,10 @@ function get_data_perushaan($id_perusahaan)
 // membuat kode api transaksi unik
 function get_kode_trx_api()
 {
+    date_default_timezone_set('Asia/Jakarta');
+
     $timestamp = time(); // Mendapatkan UNIX timestamp saat ini
-    $kode_unik = uniqid($timestamp, true); // Menggabungkan timestamp dengan ID unik
-    return $kode_unik;
+    return $timestamp;
 }
 
 

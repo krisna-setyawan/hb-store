@@ -403,6 +403,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
 
     // Penjualan Order
     $routes->get('sales-order', 'Sales\Order::index', ['filter' => 'permission:Penjualan']);
+    $routes->get('sales-order/(:any)/(:any)', 'Sales\Order::show/$1/$2', ['filter' => 'permission:Penjualan']);
 
     // Fixing Penawaran
     $routes->get('sales-fixing_penawaran', 'Sales\Penawaran_fixing::index', ['filter' => 'permission:Penjualan']);

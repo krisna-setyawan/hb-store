@@ -18,6 +18,7 @@ class PenjualanOrderModel extends Model
     protected $allowedFields    = [
         'id_pemesanan',
         'no_pemesanan',
+        'kode_trx_api',
         'id_perusahaan',
         'nama_perusahaan',
         'tanggal',

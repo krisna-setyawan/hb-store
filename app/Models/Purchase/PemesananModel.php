@@ -19,6 +19,7 @@ class PemesananModel extends Model
         'id_user',
         'id_gudang',
         'no_pemesanan',
+        'kode_trx_api',
         'jenis_supplier',
         'id_perusahaan',
         'tanggal',

@@ -13,6 +13,7 @@ class HaebotOrder extends Migration
             'id'                    => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
             'id_pemesanan'          => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'null' => true],
             'no_pemesanan'          => ['type' => 'varchar', 'constraint' => 30],
+            'kode_trx_api'          => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
             'id_perusahaan'         => ['type' => 'varchar', 'constraint' => 30, 'null' => true],
             'nama_perusahaan'       => ['type' => 'varchar', 'constraint' => 80],
             'tanggal'               => ['type' => 'date'],

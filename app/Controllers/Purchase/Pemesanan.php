@@ -209,15 +209,31 @@ class Pemesanan extends ResourcePresenter
     public function kirimPemesanan()
     {
         $id_pemesanan = $this->request->getVar('id_pemesanan');
+        $kode_trx_api = get_kode_trx_api();
 
         $modelPemesanan = new PemesananModel();
-        $pemesanan = $modelPemesanan->find($id_pemesanan);
+        $modelSupplier = new SupplierModel();
+        $supplier = $modelSupplier->find($this->request->getPost('id_supplier'));
 
         $modelPemesananDetail = new PemesananDetailModel();
         $sum = $modelPemesananDetail->sumTotalHargaProduk($id_pemesanan);
 
-        $modelSupplier = new SupplierModel();
-        $supplier = $modelSupplier->find($this->request->getPost('id_supplier'));
+        $data_update = [
+            'id'                    => $id_pemesanan,
+            'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
+            'kode_trx_api'          => $kode_trx_api,
+            'id_supplier'           => $this->request->getVar('supplier'),
+            'jenis_supplier'        => $supplier['jenis_supplier'],
+            'id_perusahaan'         => $supplier['id_perusahaan'],
+            'id_gudang'             => $this->request->getVar('gudang'),
+            'id_user'               => $this->request->getVar('id_user'),
+            'tanggal'               => $this->request->getVar('tanggal'),
+            'total_harga_produk'    => $sum['total_harga'],
+            'status'                => 'Ordered'
+        ];
+        $modelPemesanan->save($data_update);
+
+        $pemesanan = $modelPemesanan->find($id_pemesanan);
 
         $pesanFlash = '';
 
@@ -232,7 +248,7 @@ class Pemesanan extends ResourcePresenter
             $data_order = [
                 'id_pemesanan'      => $pemesanan['id'],
                 'no_pemesanan'      => $this->request->getVar('no_pemesanan'),
-                'kode_trx_api'      => get_kode_trx_api(),
+                'kode_trx_api'      => $kode_trx_api,
                 'id_perusahaan'     => $_ENV['ID_PERUSAHAAN'],
                 'nama_perusahaan'   => $_ENV['NAMA_PERUSAHAAN'],
                 'tanggal'           => $this->request->getVar('tanggal'),
@@ -249,8 +265,9 @@ class Pemesanan extends ResourcePresenter
                 // Sent Notif
                 $url_give_notif = $perusahaan['url'] . 'hbapi-give-notif';
                 $data_notif = [
-                    'untuk' => 'Order',
-                    'notif' => 'Order masuk dari ' . $_ENV['NAMA_PERUSAHAAN']
+                    'kode_trx_api'  => $kode_trx_api,
+                    'untuk'         => 'Order',
+                    'notif'         => 'Order masuk dari ' . $_ENV['NAMA_PERUSAHAAN']
                 ];
                 $response_give_notif = $client->request('POST', $url_give_notif, [
                     'form_params' => $data_notif
@@ -278,6 +295,12 @@ class Pemesanan extends ResourcePresenter
                 'invoice'               => '-',
                 'no_pemesanan'          => $pemesanan['no_pemesanan'],
                 'tanggal'               => $pemesanan['tanggal'],
+                'panjang'               => 1,
+                'lebar'                 => 1,
+                'tinggi'                => 1,
+                'berat'                 => 1,
+                'carton_koli'           => 1,
+                'exw'                   => $sum['total_harga'],
                 'grand_total'           => $sum['total_harga'],
                 'status'                => 'Fixing',
             ];
@@ -298,21 +321,6 @@ class Pemesanan extends ResourcePresenter
                 $modelPemesananFixingDetail->save($data_produk);
             }
         }
-
-
-        $data_update = [
-            'id'                    => $pemesanan['id'],
-            'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
-            'id_supplier'           => $this->request->getVar('supplier'),
-            'jenis_supplier'        => $supplier['jenis_supplier'],
-            'id_perusahaan'         => $supplier['id_perusahaan'],
-            'id_gudang'             => $this->request->getVar('gudang'),
-            'id_user'               => $this->request->getVar('id_user'),
-            'tanggal'               => $this->request->getVar('tanggal'),
-            'total_harga_produk'    => $sum['total_harga'],
-            'status'                => 'Ordered'
-        ];
-        $modelPemesanan->save($data_update);
 
         session()->setFlashdata('pesan', $pesanFlash);
         return redirect()->to('/purchase-pemesanan');

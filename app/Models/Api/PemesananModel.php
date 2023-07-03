@@ -52,7 +52,7 @@ class PemesananModel extends Model
     protected $afterDelete    = [];
 
 
-    public function getPemesanan($no)
+    public function getPemesanan($kode_trx_api)
     {
         $data =  $this->db->table($this->table)
             ->select('pemesanan.*, supplier.nama as supplier, supplier.origin as origin, karyawan.nama_lengkap as admin')
@@ -60,7 +60,7 @@ class PemesananModel extends Model
             ->join('users', 'pemesanan.id_user = users.id', 'left')
             ->join('karyawan', 'users.id_karyawan = karyawan.id', 'left')
             // ->where('pemesanan.deleted_at', null)
-            ->where('no_pemesanan', $no)
+            ->where('kode_trx_api', $kode_trx_api)
             ->get()
             ->getRowArray();
 

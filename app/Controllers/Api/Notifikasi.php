@@ -45,6 +45,7 @@ class Notifikasi extends ResourceController
     public function create()
     {
         $dataInsert = [
+            'kode_trx_api' => $this->request->getVar('kode_trx_api'),
             'untuk' => $this->request->getVar('untuk'),
             'notif'  => $this->request->getVar('notif'),
         ];

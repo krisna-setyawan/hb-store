@@ -8,7 +8,7 @@ use CodeIgniter\Config\Services;
 
 class Order extends ResourcePresenter
 {
-    protected $helpers = ['form', 'api'];
+    protected $helpers = ['form', 'nomor_auto_helper'];
 
     public function index()
     {
@@ -22,7 +22,7 @@ class Order extends ResourcePresenter
         return view('sales/order/index', $data);
     }
 
-    public function show($no_pemesanan = null, $id_perusahaan = null)
+    public function show($kode_trx_api = null, $id_perusahaan = null)
     {
         $client = Services::curlrequest();
 
@@ -30,7 +30,8 @@ class Order extends ResourcePresenter
         $perusahaan = get_data_perushaan($id_perusahaan);
 
         // Get data pemesanan
-        $url_get_pemesanan = $perusahaan['url'] . 'public/hbapi-get-detail-pemesanan/' . $no_pemesanan;
+        $url_get_pemesanan = $perusahaan['url'] . 'hbapi-get-detail-pemesanan/' . $kode_trx_api;
+
         $response_get_pemesanan = $client->request('GET', $url_get_pemesanan);
         $status = $response_get_pemesanan->getStatusCode();
         $responseJsonPemesanan = $response_get_pemesanan->getBody();

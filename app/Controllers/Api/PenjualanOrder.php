@@ -47,6 +47,7 @@ class PenjualanOrder extends ResourceController
         $dataInsert = [
             'id_pemesanan' => $this->request->getVar('id_pemesanan'),
             'no_pemesanan' => $this->request->getVar('no_pemesanan'),
+            'kode_trx_api' => $this->request->getVar('kode_trx_api'),
             'id_perusahaan' => $this->request->getVar('id_perusahaan'),
             'nama_perusahaan' => $this->request->getVar('nama_perusahaan'),
             'tanggal' => $this->request->getVar('tanggal'),

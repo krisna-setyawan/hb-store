@@ -25,12 +25,12 @@ class Pemesanan extends ResourceController
      *
      * @return mixed
      */
-    public function show($no_pemesanan = null)
+    public function show($kode_trx_api = null)
     {
         $modelPemesanan = new PemesananModel();
         $modelPemesananDetail = new PemesananDetailModel();
 
-        $pemesanan = $modelPemesanan->getPemesanan($no_pemesanan);
+        $pemesanan = $modelPemesanan->getPemesanan($kode_trx_api);
 
         $data = [
             'message' => 'success',

@@ -13,7 +13,7 @@ class NotifikasiModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = false;
-    protected $allowedFields    = ['untuk', 'notif'];
+    protected $allowedFields    = ['kode_trx_api', 'untuk', 'notif'];
 
     // Dates
     protected $useTimestamps = false;
