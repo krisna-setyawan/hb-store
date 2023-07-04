@@ -47,7 +47,7 @@
                             <button title="Proses" class="px-2 py-0 btn btn-sm btn-outline-primary" onclick="detailOrder(<?= $ord['kode_trx_api'] ?>, '<?= $ord['id_perusahaan'] ?>')">
                                 <i class="fa-fw fa-solid fa-arrow-right"></i>
                             </button>
-                            <button title="Tolak" class="px-2 py-0 btn btn-sm btn-outline-danger" onclick="detailOrder(<?= $ord['kode_trx_api'] ?>, '<?= $ord['id_perusahaan'] ?>')">
+                            <button title="Tolak" class="px-2 py-0 btn btn-sm btn-outline-danger" onclick="tolakOrder(<?= $ord['kode_trx_api'] ?>, '<?= $ord['id_perusahaan'] ?>', '<?= $ord['no_pemesanan'] ?>')">
                                 <i class="fa-fw fa-solid fa-xmark"></i>
                             </button>
                         </td>
@@ -105,6 +105,47 @@
             error: function(e) {
                 alert('Error \n' + e.responseText);
             }
+        })
+    }
+
+
+    function tolakOrder(kode_trx_api, id_perusahaan, no_pemesanan) {
+        Swal.fire({
+            title: 'Konfirmasi?',
+            text: "Apakah yakin akan menolak order ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Tolak!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            $.ajax({
+                type: "post",
+                url: "<?= site_url() ?>sales-alasan_tolak_order",
+                data: 'kode_trx_api=' + kode_trx_api + '&id_perusahaan=' + id_perusahaan + '&no_pemesanan=' + no_pemesanan,
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 'success') {
+                        Swal.fire(
+                            'Berhasil.',
+                            'Menolak order',
+                            'success'
+                        ).then((result) => {
+                            location.reload();
+                        })
+                    } else {
+                        Swal.fire(
+                            'Opss.',
+                            'Terjadi kesalahan, hubungi IT Support',
+                            'error'
+                        )
+                    }
+                },
+                error: function(e) {
+                    alert('Error \n' + e.responseText);
+                }
+            });
         })
     }
 </script>

@@ -57,6 +57,20 @@ function nomor_pemesanan_auto($tgl)
 
 
 
+// BACA NOTIFIKASI (seharusnya ditambahkan id_perusahaan)
+function baca_notifikasi($kode_trx_api)
+{
+    $db = db_connect();
+
+    $quer = "UPDATE notifikasi SET status='Read' WHERE kode_trx_api = '$kode_trx_api'";
+    $db->query($quer);
+}
+
+
+
+
+
+
 // FINANCE -------------------------------------------------------------------------------------------------
 
 function jurnal_nomor_auto($tgl)

@@ -41,6 +41,24 @@ class Pemesanan extends ResourceController
         return $this->respond($data, 200);
     }
 
+
+
+    public function ditolak($kode_trx_api = null)
+    {
+        $kode_trx_api = $this->request->getVar('kode_trx_api');
+
+        $modelPemesanan = new PemesananModel();
+
+        $modelPemesanan->where('kode_trx_api', $kode_trx_api)->set(['status' => 'Ditolak',])->update();
+
+        $response = [
+            'status'   => 201,
+            'error'    => null,
+            'messages' => 'Berhasil menolak order.'
+        ];
+        return $this->respondCreated($response);
+    }
+
     /**
      * Return a new resource object, with default properties
      *

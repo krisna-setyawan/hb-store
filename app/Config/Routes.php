@@ -40,7 +40,9 @@ $routes->get('hbapi-get-produk/(:any)', 'Api\Produk::show/$1');
 $routes->post('hbapi-give-notif', 'Api\Notifikasi::create');
 
 $routes->post('hbapi-sent-penjualan-order', 'Api\PenjualanOrder::create');
+
 $routes->get('hbapi-get-detail-pemesanan/(:any)', 'Api\Pemesanan::show/$1');
+$routes->post('hbapi-terima-tolak-pemesanan', 'Api\Pemesanan::ditolak');
 
 
 
@@ -404,6 +406,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     // Penjualan Order
     $routes->get('sales-order', 'Sales\Order::index', ['filter' => 'permission:Penjualan']);
     $routes->get('sales-order/(:any)/(:any)', 'Sales\Order::show/$1/$2', ['filter' => 'permission:Penjualan']);
+    $routes->post('sales-alasan_tolak_order', 'Sales\Order::tolakOrder', ['filter' => 'permission:Penjualan']);
 
     // Fixing Penawaran
     $routes->get('sales-fixing_penawaran', 'Sales\Penawaran_fixing::index', ['filter' => 'permission:Penjualan']);
