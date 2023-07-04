@@ -315,6 +315,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
 
     // Pemesanan
     $routes->resource('purchase-pemesanan', ['controller' => 'Purchase\Pemesanan', 'filter' => 'permission:Pembelian']);
+    $routes->get('purchase-pemesanan-baca-notif/(:any)', 'Purchase\Pemesanan::readNotifPemesanan/$1', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-getdatapemesanan', 'Purchase\Pemesanan::getDataPemesanan', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-repeat_pemesanan/(:any)', 'Purchase\Pemesanan::repeatPemesanan/$1', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-save_repeat_pemesanan', 'Purchase\Pemesanan::saveRepeat', ['filter' => 'permission:Pembelian']);
@@ -405,6 +406,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
 
     // Penjualan Order
     $routes->get('sales-order', 'Sales\Order::index', ['filter' => 'permission:Penjualan']);
+    $routes->get('sales-getdataorder', 'Sales\Order::getDataOrder', ['filter' => 'permission:Penjualan']);
     $routes->get('sales-order/(:any)/(:any)', 'Sales\Order::show/$1/$2', ['filter' => 'permission:Penjualan']);
     $routes->post('sales-alasan_tolak_order', 'Sales\Order::tolakOrder', ['filter' => 'permission:Penjualan']);
 

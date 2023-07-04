@@ -58,11 +58,11 @@ function nomor_pemesanan_auto($tgl)
 
 
 // BACA NOTIFIKASI (seharusnya ditambahkan id_perusahaan)
-function baca_notifikasi($kode_trx_api)
+function baca_notifikasi($kode_trx_api, $untuk)
 {
     $db = db_connect();
 
-    $quer = "UPDATE notifikasi SET status='Read' WHERE kode_trx_api = '$kode_trx_api'";
+    $quer = "UPDATE notifikasi SET status='Read' WHERE kode_trx_api = '$kode_trx_api' AND untuk = '$untuk'";
     $db->query($quer);
 }
 

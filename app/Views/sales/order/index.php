@@ -25,34 +25,14 @@
                     <th class="text-center" width="5%">No</th>
                     <th class="text-center" width="13%">No Pemesanan</th>
                     <th class="text-center" width="12%">Tanggal</th>
-                    <th class="text-center" width="40%">Perusahaan</th>
+                    <th class="text-center" width="30%">Perusahaan</th>
                     <th class="text-center" width="18%">Total</th>
+                    <th class="text-center" width="10%">Status</th>
                     <th class="text-center" width="12%">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php
-                $no = 1;
-                foreach ($order as $ord) : ?>
-                    <tr>
-                        <td><?= $no++ ?></td>
-                        <td><?= $ord['no_pemesanan'] ?></td>
-                        <td><?= $ord['tanggal'] ?></td>
-                        <td><?= $ord['nama_perusahaan'] ?></td>
-                        <td>Rp. <?= number_format($ord['grand_total'], 0, ',', '.') ?></td>
-                        <td class="text-center">
-                            <button title="Detail" class="px-2 py-0 btn btn-sm btn-outline-dark" onclick="detailOrder(<?= $ord['kode_trx_api'] ?>, '<?= $ord['id_perusahaan'] ?>')">
-                                <i class="fa-fw fa-solid fa-magnifying-glass"></i>
-                            </button>
-                            <button title="Proses" class="px-2 py-0 btn btn-sm btn-outline-primary" onclick="detailOrder(<?= $ord['kode_trx_api'] ?>, '<?= $ord['id_perusahaan'] ?>')">
-                                <i class="fa-fw fa-solid fa-arrow-right"></i>
-                            </button>
-                            <button title="Tolak" class="px-2 py-0 btn btn-sm btn-outline-danger" onclick="tolakOrder(<?= $ord['kode_trx_api'] ?>, '<?= $ord['id_perusahaan'] ?>', '<?= $ord['no_pemesanan'] ?>')">
-                                <i class="fa-fw fa-solid fa-xmark"></i>
-                            </button>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+
             </tbody>
         </table>
     </div>
@@ -83,8 +63,51 @@
 
 <script>
     $(document).ready(function() {
-        $('#tabel').dataTable();
-    })
+        $('#tabel').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '<?= site_url() ?>sales-getdataorder',
+            order: [],
+            columns: [{
+                    data: 'no',
+                    orderable: false
+                },
+                {
+                    data: 'no_pemesanan'
+                },
+                {
+                    data: 'tanggal'
+                },
+                {
+                    data: 'nama_perusahaan'
+                },
+                {
+                    data: 'grand_total',
+                    render: function(data, type, row) {
+                        return 'Rp ' + data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+                    }
+                },
+                {
+                    data: 'status'
+                },
+                {
+                    data: 'aksi',
+                    orderable: false,
+                    className: 'text-center'
+                },
+            ]
+        });
+
+        // Alert
+        var op = <?= (!empty(session()->getFlashdata('pesan')) ? json_encode(session()->getFlashdata('pesan')) : '""'); ?>;
+        if (op != '') {
+            Toast.fire({
+                icon: 'success',
+                title: op
+            })
+        }
+    });
+
 
     function detailOrder(kode_trx_api, id_perusahaan) {
         $.ajax({

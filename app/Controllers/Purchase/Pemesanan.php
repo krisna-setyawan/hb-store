@@ -58,6 +58,13 @@ class Pemesanan extends ResourcePresenter
     }
 
 
+    public function readNotifPemesanan($kode_trx_api)
+    {
+        baca_notifikasi($kode_trx_api, 'Pemesanan');
+        return redirect()->to('/purchase-pemesanan');
+    }
+
+
     public function show($no = null)
     {
         if ($this->request->isAJAX()) {

@@ -4,6 +4,7 @@ namespace App\Controllers\Sales;
 
 use App\Models\Sales\PenjualanOrderModel;
 use CodeIgniter\RESTful\ResourcePresenter;
+use \Hermawan\DataTables\DataTable;
 use CodeIgniter\Config\Services;
 
 class Order extends ResourcePresenter
@@ -21,6 +22,43 @@ class Order extends ResourcePresenter
         ];
 
         return view('sales/order/index', $data);
+    }
+
+
+    public function getDataOrder()
+    {
+        if ($this->request->isAJAX()) {
+            $db = \Config\Database::connect();
+            $data =  $db->table('penjualan_order')
+                ->select('id, id_pemesanan, no_pemesanan, kode_trx_api, id_perusahaan, nama_perusahaan, tanggal, status, grand_total');
+
+            return DataTable::of($data)
+                ->addNumbering('no')
+                ->add('aksi', function ($row) {
+                    if ($row->status == 'Waiting') {
+                        return '
+                        <button title="Detail" class="px-2 py-0 btn btn-sm btn-outline-dark" onclick="detailOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\')">
+                            <i class="fa-fw fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        <button title="Proses" class="px-2 py-0 btn btn-sm btn-outline-primary" onclick="detailOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\')">
+                            <i class="fa-fw fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button title="Tolak" class="px-2 py-0 btn btn-sm btn-outline-danger" onclick="tolakOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\', \'' . $row->no_pemesanan . '\')">
+                            <i class="fa-fw fa-solid fa-xmark"></i>
+                        </button>
+                        ';
+                    } else {
+                        return '
+                        <button title="Proses" class="px-2 py-0 btn btn-sm btn-outline-dark" onclick="detailOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\')">
+                        <i class="fa-fw fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    ';
+                    }
+                }, 'last')
+                ->toJson(true);
+        } else {
+            return "Tidak bisa load data.";
+        }
     }
 
 
@@ -99,7 +137,7 @@ class Order extends ResourcePresenter
                 $modelOrder = new PenjualanOrderModel();
                 $modelOrder->where('kode_trx_api', $kode_trx_api)->set(['status' => 'Tolak',])->update();
 
-                baca_notifikasi($kode_trx_api);
+                baca_notifikasi($kode_trx_api, 'Order');
             } else {
                 $keterangan = "Berhasil menolak order tapi Gagal mengirim Notif " . $responseBodyNotif['error'];
             }

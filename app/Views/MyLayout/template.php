@@ -138,7 +138,7 @@
                                         href += '<?= base_url() ?>sales-order';
                                         break;
                                     case 'Pemesanan':
-                                        href += '<?= base_url() ?>purchase-pemesanan';
+                                        href += '<?= base_url() ?>purchase-pemesanan-baca-notif/' + item.kode_trx_api;
                                         break;
                                     case 'Fixing Pemesanan':
                                         href += '<?= base_url() ?>purchase-fixing-pemesanan';
