@@ -4,6 +4,7 @@ namespace App\Controllers\Api;
 
 use App\Models\Api\PemesananDetailModel;
 use App\Models\Api\PemesananModel;
+use App\Models\Api\ProdukModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class Pemesanan extends ResourceController
@@ -18,6 +19,24 @@ class Pemesanan extends ResourceController
     public function index()
     {
         //
+    }
+
+
+    public function validateExistProduk($sku)
+    {
+        $modelProduk = new ProdukModel();
+        $produk = $modelProduk->where('sku', $sku)->find();
+
+        if ($produk) {
+            $data = [
+                'result' => 'exist',
+            ];
+        } else {
+            $data = [
+                'result' => 'not exist',
+            ];
+        }
+        return $this->respond($data, 200);
     }
 
     /**

@@ -32,14 +32,14 @@
             $no = 1;
             foreach ($produk_supplier as $pr) : ?>
                 <tr>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')" class="text-center"><?= $no++ ?></td>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')"><?= $pr['produk'] ?></td>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')" class="text-center">-</td>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')" class="text-center">-</td>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')" class="text-center">-</td>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')" class="text-center">-</td>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')" class="text-center">-</td>
-                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>')" class="text-center"><?= $pr['stok'] ?></td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')" class="text-center"><?= $no++ ?></td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')"><?= $pr['produk'] ?></td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')" class="text-center">-</td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')" class="text-center">-</td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')" class="text-center">-</td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')" class="text-center">-</td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')" class="text-center">-</td>
+                    <td style="cursor: pointer;" onclick="addProdukSupplier(<?= $pr['id_produk'] ?>, '<?= $pr['produk'] ?>', '<?= $pr['sku'] ?>')" class="text-center"><?= $pr['stok'] ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -81,12 +81,45 @@
     }
 
 
-    function addProdukSupplier(id_produk, produk) {
-        $('#produk').val(produk);
-        $('#id_produk').val(id_produk);
+    function addProdukSupplier(id_produk, produk, sku) {
+        let jenis_supplier = $('#jenis_supplier').val();
 
-        $('#my-modal').modal('hide')
+        if (jenis_supplier == 'Haebot') {
+            let supplier = $('#supplier').val();
+            let id_perusahaan = $('#id_perusahaan').val();
+
+            $.ajax({
+                type: "post",
+                url: "<?= site_url() ?>purchase-validate_produk_api",
+                data: 'sku=' + sku + '&id_perusahaan=' + id_perusahaan,
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 'ok') {
+                        $('#produk').val(produk);
+                        $('#id_produk').val(id_produk);
+
+                        $('#my-modal').modal('hide')
+                    } else {
+                        Swal.fire(
+                            'Opss.',
+                            'Maaf ' + response.message,
+                            'error'
+                        )
+                    }
+                },
+                error: function(e) {
+                    alert('Error \n' + e.responseText);
+                }
+            });
+        } else {
+            $('#produk').val(produk);
+            $('#id_produk').val(id_produk);
+
+            $('#my-modal').modal('hide')
+        }
     }
+
+
 
     $(document).on('keydown', function(event) {
         if (event.which == 112) { //cek apakah tombol yang ditekan adalah tombol f1

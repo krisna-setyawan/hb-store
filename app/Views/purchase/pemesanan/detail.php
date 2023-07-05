@@ -67,13 +67,16 @@
                 <div class="card-body" style="background-color: #E6ECF0;">
                     <form id="form_pemesanan" autocomplete="off" action="<?= site_url() ?>purchase-kirim_pemesanan" method="post">
                         <input type="hidden" id="id_pemesanan" name="id_pemesanan" value="<?= $pemesanan['id'] ?>">
+                        <input type="hidden" id="jenis_supplier" name="jenis_supplier" value="<?= $pemesanan['jenis_supplier'] ?>">
+                        <input type="hidden" id="id_perusahaan" name="id_perusahaan" value="<?= $pemesanan['id_perusahaan'] ?>">
+
                         <div class="mb-3">
                             <label for="no_pemesanan" class="form-label">Nomor Pemesanan</label>
                             <input readonly type="text" class="form-control" id="no_pemesanan" name="no_pemesanan" value="<?= $pemesanan['no_pemesanan'] ?>">
                         </div>
                         <div class="mb-3">
                             <label for="supplier" class="form-label">Supplier</label>
-                            <select class="form-select" id="supplier" name="supplier">
+                            <select disabled class="form-select" id="supplier" name="supplier">
                                 <?php foreach ($supplier as $sup) : ?>
                                     <option <?= ($sup['id'] == $pemesanan['id_supplier']) ? 'selected' : '' ?> value="<?= $sup['id'] ?>"><?= $sup['nama'] ?></option>
                                 <?php endforeach ?>

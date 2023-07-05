@@ -41,6 +41,8 @@ $routes->post('hbapi-give-notif', 'Api\Notifikasi::create');
 
 $routes->post('hbapi-sent-penjualan-order', 'Api\PenjualanOrder::create');
 
+$routes->get('hbapi-validate-exist-produk/(:any)', 'Api\Pemesanan::validateExistProduk/$1');
+
 $routes->get('hbapi-get-detail-pemesanan/(:any)', 'Api\Pemesanan::show/$1');
 $routes->post('hbapi-terima-tolak-pemesanan', 'Api\Pemesanan::ditolak');
 
@@ -325,6 +327,7 @@ $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     // Pemesanan Detail
     $routes->get('purchase-get_produk_add_list/(:any)', 'Purchase\Pemesanan_detail::getProdukForAddList/$1', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-find_produk_by_nama_sku', 'Purchase\Pemesanan_detail::findProdukByNamaSKU', ['filter' => 'permission:Pembelian']);
+    $routes->post('purchase-validate_produk_api', 'Purchase\Pemesanan_detail::validateProdukApi', ['filter' => 'permission:Pembelian']);
     $routes->get('purchase-list_pemesanan/(:any)', 'Purchase\Pemesanan_detail::List_pemesanan/$1', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-ganti_no_pemesanan', 'Purchase\Pemesanan_detail::gantiNoPemesanan', ['filter' => 'permission:Pembelian']);
     $routes->post('purchase-produks_pemesanan', 'Purchase\Pemesanan_detail::getListProdukPemesanan', ['filter' => 'permission:Pembelian']);

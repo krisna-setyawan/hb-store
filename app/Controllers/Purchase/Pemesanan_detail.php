@@ -121,6 +121,38 @@ class Pemesanan_detail extends ResourcePresenter
     }
 
 
+    public function validateProdukApi()
+    {
+        $client = Services::curlrequest();
+
+        $id_perusahaan = $this->request->getVar('id_perusahaan');
+        $sku = $this->request->getVar('sku');
+
+        // Get data perusahaan
+        $perusahaan = get_data_perushaan($id_perusahaan);
+
+        $url_validate = $perusahaan['url'] . 'hbapi-validate-exist-produk/' . $sku;
+
+        $response_validate_sku = $client->request('GET', $url_validate);
+        $status = $response_validate_sku->getStatusCode();
+        $responseJson = $response_validate_sku->getBody();
+        $responseArray = json_decode($responseJson, true);
+
+        if ($responseArray['result'] == 'exist') {
+            $json = [
+                'status' => 'ok',
+            ];
+        } else {
+            $json = [
+                'status' => 'not ok',
+                'message' => $perusahaan['nama'] . ' tidak memiliki produk dengan SKU ' . $sku
+            ];
+        }
+
+        echo json_encode($json);
+    }
+
+
     public function create()
     {
         $id_produk = $this->request->getPost('id_produk');
