@@ -229,7 +229,7 @@ class Pemesanan extends ResourcePresenter
             'id'                    => $id_pemesanan,
             'no_pemesanan'          => $this->request->getVar('no_pemesanan'),
             'kode_trx_api'          => $kode_trx_api,
-            'id_supplier'           => $this->request->getVar('supplier'),
+            'id_supplier'           => $this->request->getVar('id_supplier'),
             'jenis_supplier'        => $supplier['jenis_supplier'],
             'id_perusahaan'         => $supplier['id_perusahaan'],
             'id_gudang'             => $this->request->getVar('gudang'),

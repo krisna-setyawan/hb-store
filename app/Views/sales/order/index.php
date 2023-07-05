@@ -143,32 +143,34 @@
             confirmButtonText: 'Ya, Tolak!',
             cancelButtonText: 'Batal'
         }).then((result) => {
-            $.ajax({
-                type: "post",
-                url: "<?= site_url() ?>sales-alasan_tolak_order",
-                data: 'kode_trx_api=' + kode_trx_api + '&id_perusahaan=' + id_perusahaan + '&no_pemesanan=' + no_pemesanan,
-                dataType: "json",
-                success: function(response) {
-                    if (response.status == 'success') {
-                        Swal.fire(
-                            'Berhasil.',
-                            'Menolak order',
-                            'success'
-                        ).then((result) => {
-                            location.reload();
-                        })
-                    } else {
-                        Swal.fire(
-                            'Opss.',
-                            'Terjadi kesalahan, hubungi IT Support',
-                            'error'
-                        )
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "post",
+                    url: "<?= site_url() ?>sales-alasan_tolak_order",
+                    data: 'kode_trx_api=' + kode_trx_api + '&id_perusahaan=' + id_perusahaan + '&no_pemesanan=' + no_pemesanan,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            Swal.fire(
+                                'Berhasil.',
+                                'Menolak order',
+                                'success'
+                            ).then((result) => {
+                                location.reload();
+                            })
+                        } else {
+                            Swal.fire(
+                                'Opss.',
+                                'Terjadi kesalahan, hubungi IT Support',
+                                'error'
+                            )
+                        }
+                    },
+                    error: function(e) {
+                        alert('Error \n' + e.responseText);
                     }
-                },
-                error: function(e) {
-                    alert('Error \n' + e.responseText);
-                }
-            });
+                });
+            }
         })
     }
 </script>
