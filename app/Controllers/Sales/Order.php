@@ -40,7 +40,7 @@ class Order extends ResourcePresenter
                         <button title="Detail" class="px-2 py-0 btn btn-sm btn-outline-dark" onclick="detailOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\')">
                             <i class="fa-fw fa-solid fa-magnifying-glass"></i>
                         </button>
-                        <button title="Proses" class="px-2 py-0 btn btn-sm btn-outline-primary" onclick="detailOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\')">
+                        <button title="Terima Order" class="px-2 py-0 btn btn-sm btn-outline-primary" onclick="terimaOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\')">
                             <i class="fa-fw fa-solid fa-arrow-right"></i>
                         </button>
                         <button title="Tolak" class="px-2 py-0 btn btn-sm btn-outline-danger" onclick="tolakOrder(' . $row->kode_trx_api . ', \'' . $row->id_perusahaan . '\', \'' . $row->no_pemesanan . '\')">

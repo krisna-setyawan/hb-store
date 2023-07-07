@@ -37,6 +37,8 @@
         </table>
     </div>
 
+    <form action="<?= site_url() ?>">
+    </form>
 </main>
 
 <?= $this->include('MyLayout/js') ?>
@@ -67,7 +69,7 @@
             processing: true,
             serverSide: true,
             ajax: '<?= site_url() ?>sales-getdataorder',
-            order: [],
+            order: ['1', 'desc'],
             columns: [{
                     data: 'no',
                     orderable: false
@@ -147,6 +149,49 @@
                 $.ajax({
                     type: "post",
                     url: "<?= site_url() ?>sales-alasan_tolak_order",
+                    data: 'kode_trx_api=' + kode_trx_api + '&id_perusahaan=' + id_perusahaan + '&no_pemesanan=' + no_pemesanan,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            Swal.fire(
+                                'Berhasil.',
+                                'Menolak order',
+                                'success'
+                            ).then((result) => {
+                                location.reload();
+                            })
+                        } else {
+                            Swal.fire(
+                                'Opss.',
+                                'Terjadi kesalahan, hubungi IT Support',
+                                'error'
+                            )
+                        }
+                    },
+                    error: function(e) {
+                        alert('Error \n' + e.responseText);
+                    }
+                });
+            }
+        })
+    }
+
+
+    function terimaOrder(kode_trx_api, id_perusahaan) {
+        Swal.fire({
+            title: 'Konfirmasi?',
+            text: "Apakah yakin akan menerima dan melanjutkan ke fixing penjualan untuk order ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Lanjut!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "post",
+                    url: "<?= site_url() ?>sales-terima_order",
                     data: 'kode_trx_api=' + kode_trx_api + '&id_perusahaan=' + id_perusahaan + '&no_pemesanan=' + no_pemesanan,
                     dataType: "json",
                     success: function(response) {

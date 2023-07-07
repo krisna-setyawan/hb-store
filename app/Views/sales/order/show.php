@@ -1,41 +1,50 @@
-<div class="row mb-2">
-    <div class="col-md-3">
-        <div class="fw-bold">Customer</div>
+<div class="row">
+    <div class="col-md-10">
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="fw-bold">Customer</div>
+            </div>
+            <div class="col-md-9">
+                <?= $order['nama_perusahaan'] ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="fw-bold">No Pemesanan Customer</div>
+            </div>
+            <div class="col-md-9">
+                <?= $pemesanan['no_pemesanan'] ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="fw-bold">Kode Transaksi</div>
+            </div>
+            <div class="col-md-9">
+                <?= $pemesanan['kode_trx_api'] ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="fw-bold">Tanggal</div>
+            </div>
+            <div class="col-md-9">
+                <?= $pemesanan['tanggal'] ?>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="fw-bold">Status Order</div>
+            </div>
+            <div class="col-md-9">
+                <?= $order['status'] ?>
+            </div>
+        </div>
     </div>
-    <div class="col-md-9">
-        <?= $order['nama_perusahaan'] ?>
-    </div>
-</div>
-<div class="row mb-2">
-    <div class="col-md-3">
-        <div class="fw-bold">No Pemesanan Customer</div>
-    </div>
-    <div class="col-md-9">
-        <?= $pemesanan['no_pemesanan'] ?>
-    </div>
-</div>
-<div class="row mb-2">
-    <div class="col-md-3">
-        <div class="fw-bold">Kode Transaksi</div>
-    </div>
-    <div class="col-md-9">
-        <?= $pemesanan['kode_trx_api'] ?>
-    </div>
-</div>
-<div class="row mb-2">
-    <div class="col-md-3">
-        <div class="fw-bold">Tanggal</div>
-    </div>
-    <div class="col-md-9">
-        <?= $pemesanan['tanggal'] ?>
-    </div>
-</div>
-<div class="row mb-2">
-    <div class="col-md-3">
-        <div class="fw-bold">Status Order</div>
-    </div>
-    <div class="col-md-9">
-        <?= $order['status'] ?>
+    <div class="col-md-2 text-start mt-2">
+        <a onclick="terimaOrder(<?= $pemesanan['kode_trx_api'] ?>, '<?= $pemesanan['id_perusahaan'] ?>')">
+            <button class="btn btn-success mb-1"><i class="fa-regular fa-pen-to-square"></i> Terima Order</button>
+        </a>
     </div>
 </div>
 
